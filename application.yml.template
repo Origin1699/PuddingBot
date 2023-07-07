@@ -1,0 +1,21 @@
+server:
+  # SpringBoot 项目的运行端口即为客户端反向 Websocket 连接端口
+  port: 5555
+
+# -->不要修改
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:BotDB.sqlite3
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+# 不要修改 <--
+
+bot-config:
+  nice-name: ["布丁"]
+  prefix:
+  master:
+    - 10001
