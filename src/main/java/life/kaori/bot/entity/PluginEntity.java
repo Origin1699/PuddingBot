@@ -1,6 +1,8 @@
 package life.kaori.bot.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +18,8 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "tb_plugin")
-public class Plugin {
+@NoArgsConstructor
+public class PluginEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,7 +27,13 @@ public class Plugin {
     @Column
     private String name;
     @Column
-    private String nickName;
+    private String alias;
     @Column
     private boolean enable;
+
+    public PluginEntity(String name, String alias, boolean enable) {
+        this.name = name;
+        this.alias = alias;
+        this.enable = enable;
+    }
 }

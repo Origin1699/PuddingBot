@@ -3,6 +3,7 @@ package life.kaori.bot.aop;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import life.kaori.bot.common.util.BanUtil;
+import life.kaori.bot.config.PluginConfig;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,8 +18,19 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class CommandAspect {
 
-    @Autowired
     private BanUtil banUtil;
+
+    @Autowired
+    public void setBanUtil(BanUtil banUtil) {
+        this.banUtil = banUtil;
+    }
+
+    private PluginConfig pluginConfig;
+
+    @Autowired
+    public void setPluginConfig(PluginConfig pluginConfig) {
+        this.pluginConfig = pluginConfig;
+    }
 
     /**
      * 群组命令切点
@@ -30,18 +42,24 @@ public class CommandAspect {
     /**
      * 私人命令切点
      */
-    @Pointcut("execution(* life.kaori.bot.plugins.*..*.*PA(..)))")
+    @Pointcut("execution(* life.kaori.bot.plugins..*.*PA(..)))")
     private void privatePrefixPoint() {
     }
 
     @Around(value = "groupPrefixPoint()")
     public Object groupPrefixCheck(ProceedingJoinPoint pjp) throws Throwable {
+        String pluginName = pjp.getTarget().getClass().getSimpleName();
         Object[] args = pjp.getArgs();
         GroupMessageEvent event = getGroupMessageEvent(args);
+        Long groupId = event.getGroupId();
         String userId = event.getSender().getUserId();
-        if (banUtil.isBan(userId)){
+        if (banUtil.isBan(userId)) {
 
         }
+        if (!pluginConfig.pluginEnableCheck(pluginName, groupId)) {
+
+        }
+
         return pjp.proceed(args);
     }
 
@@ -54,7 +72,7 @@ public class CommandAspect {
 
     private GroupMessageEvent getGroupMessageEvent(Object[] args) {
         if (args.length >= 2) {
-            if (args[1] instanceof GroupMessageEvent){
+            if (args[1] instanceof GroupMessageEvent) {
                 return (GroupMessageEvent) args[1];
             }
         }
@@ -65,9 +83,10 @@ public class CommandAspect {
         }
         return null;
     }
+
     private PrivateMessageEvent getPrivateMessageEvent(Object[] args) {
         if (args.length >= 2) {
-            if (args[1] instanceof PrivateMessageEvent){
+            if (args[1] instanceof PrivateMessageEvent) {
                 return (PrivateMessageEvent) args[1];
             }
         }

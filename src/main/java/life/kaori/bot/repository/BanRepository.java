@@ -1,6 +1,6 @@
 package life.kaori.bot.repository;
 
-import life.kaori.bot.entity.Ban;
+import life.kaori.bot.entity.BanEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +11,6 @@ import java.util.Optional;
  * author: origin
  */
 @Repository
-public interface BanRepository extends JpaRepository<Ban, Long> {
-    Optional<Ban> findByUserId(long userId);
+public interface BanRepository extends JpaRepository<BanEntity, Long> {
+    Optional<BanEntity> findByUserId(long userId);
 }

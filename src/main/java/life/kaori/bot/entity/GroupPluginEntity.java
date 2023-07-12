@@ -1,8 +1,6 @@
 package life.kaori.bot.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.ZonedDateTime;
 
 /**
  *
@@ -18,21 +15,16 @@ import java.time.ZonedDateTime;
  */
 @Data
 @Entity
-@Table(name = "tb_ban")
-public class Ban {
+@Table(name = "tb_plugin_enable")
+public class GroupPluginEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Column
-    private Long userId;
-
+    private Long groupId;
     @Column
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private ZonedDateTime date;
-
+    private String pluginName;
     @Column
-    private String desc;
-
+    private boolean enable;
 }

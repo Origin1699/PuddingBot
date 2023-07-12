@@ -1,6 +1,6 @@
 package life.kaori.bot.common.util;
 
-import life.kaori.bot.entity.Ban;
+import life.kaori.bot.entity.BanEntity;
 import life.kaori.bot.repository.BanRepository;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class BanUtil {
     }
 
     public boolean isBan(String userId) {
-        Optional<Ban> byUserId = repository.findByUserId(Long.parseLong(userId));
+        Optional<BanEntity> byUserId = repository.findByUserId(Long.parseLong(userId));
         return byUserId.isPresent();
     }
 
