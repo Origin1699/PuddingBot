@@ -90,10 +90,10 @@
     <build>
         <finalName>pudding-bot</finalName>
         <plugins>
-            <pluginEntity>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-pluginEntity</artifactId>
-            </pluginEntity>
+            </plugin>
         </plugins>
     </build>
 </project>
