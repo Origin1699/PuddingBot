@@ -1,7 +1,10 @@
 package life.kaori.bot;
 
+import com.mikuac.shiro.core.Bot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 /**
  *
@@ -10,7 +13,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BotApplication {
 
+
     public static void main(String[] args) {
         SpringApplication.run(BotApplication.class, args);
     }
+
+    @Bean
+    public RestTemplate createRestTemplate(){
+        return new RestTemplate();
+    }
+
 }

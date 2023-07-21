@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 public class BotConfig {
     private String nickName;
+    private String botId;
     private String master;
     private String prefix;
 }

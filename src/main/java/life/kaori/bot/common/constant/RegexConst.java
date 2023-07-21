@@ -33,8 +33,13 @@ public class RegexConst {
 
     public final static String GET_QQ_DOC_URL = "(?<=\"qqdocurl\":\").*?(?=\\?share_medium)";
 
-    public final static String GET_URL_BVID = "(?<=video/).*?(?=\\?p=)";
-
+//    public final static String GET_URL_BVID = "(?<=video/).*?(?=\\?p=)";
+    public final static String GET_URL_BVID = "/video/([A-Za-z0-9]+)";
+//    public final static String GET_URL_BV23 = "\"qqdocurl\":\"(https://[^\"]+)\"";
+    public final static String GET_URL_BV23 = "\"qqdocurl\"\\s*:\\s*\"(https?://[^\"]+)\"";
+    //
+//    public final static String B23  = b23.tv/([A-Za-z0-9]+);
+    public final static String B23  = "^https://b23.tv/(([A-Za-z0-9]+))";
     public final static String ANTI_BILI_MINI_APP = "^(.*?)1109937557(.*)";
 
     public final static String GET_SYS_INFO = "^(?i)sys-info|(获取)?系统信息";

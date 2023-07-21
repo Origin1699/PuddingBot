@@ -4,7 +4,7 @@ import com.mikuac.shiro.annotation.AnyMessageHandler;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
-import com.mikuac.shiro.common.utils.MsgUtils;
+import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
@@ -12,11 +12,11 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.enums.AtEnum;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 
 
 /**
- *
  * author: origin
  */
 @Shiro
@@ -45,10 +45,17 @@ public class DemoTest {
     }
 
     // 同时监听群组及私聊消息 并根据消息类型（私聊，群聊）回复
-    @AnyMessageHandler
+//    @AnyMessageHandler
     public void fun3(Bot bot, AnyMessageEvent event) {
+        String message = event.getMessage();
+//        message = message.substring(message.indexOf("data=") + 5, message.lastIndexOf("]"));
+//        message = message.replace("&#44;", ",");
+//        System.out.println(message);
+//        Map map = JSON.parseObject(message, Map.class);
+//        RegexUtils.matcher("")
+
         System.out.println("---------AnyMessageHandler------------");
-        System.out.println(event.getMessage());
+        System.out.println(message);
         System.out.println("---------AnyMessageHandler------------");
     }
 }

@@ -73,7 +73,7 @@ public class PluginConfig {
     }
 
     public boolean isPluginEnable(String pluginName) {
-        return pluginMap.get(pluginName);
+        return pluginMap.containsKey(pluginName) ? pluginMap.get(pluginName) : true;
     }
 
     public boolean isGroupPluginEnable(String pluginName, Long groupId) {
