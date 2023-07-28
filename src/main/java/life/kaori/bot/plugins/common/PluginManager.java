@@ -1,9 +1,11 @@
 package life.kaori.bot.plugins.common;
 
+import com.mikuac.shiro.annotation.AnyMessageHandler;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
+import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import life.kaori.bot.common.util.AuthUtil;
@@ -58,11 +60,19 @@ public class PluginManager {
         System.out.println("111");
     }
 
+    @AnyMessageHandler(cmd = "^[帮助|help]$")
+    public void getHelp(Bot bot, AnyMessageEvent event) {
+        Long groupId = event.getGroupId();
+        if (groupId == null || groupId == 0) {
+            
+        }
+    }
 
     @Autowired
     public void setAuthUtil(AuthUtil authUtil) {
         this.authUtil = authUtil;
     }
+
     @Autowired
     public void setGroupPluginRepository(GroupPluginRepository groupPluginRepository) {
         this.groupPluginRepository = groupPluginRepository;

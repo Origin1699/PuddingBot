@@ -1,5 +1,6 @@
 package life.kaori.bot.plugins;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
@@ -8,11 +9,12 @@ import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.enums.AtEnum;
-import life.kaori.bot.common.constant.BotStrings;
 import life.kaori.bot.config.BotConfig;
+import life.kaori.bot.plugins.common.PluginManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 
 
@@ -21,7 +23,7 @@ import java.util.regex.Matcher;
  */
 @Shiro
 @Component
-public class DemoTest {
+public class DemoTest implements PluginManage {
     @Autowired
     private BotConfig config;
 
@@ -65,11 +67,16 @@ public class DemoTest {
 
     @PrivateMessageHandler(cmd = "hi")
     public void fun4(Bot bot, PrivateMessageEvent event) {
-        try {
-            throw BotStrings.PLUGIN_OPERATE.exception("xxxxx");
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            throw BotStrings.PLUGIN_OPERATE.exception("xxxxx");
+//        } catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
+
+        Map<String, PluginManage> beansOfType = SpringUtil.getBeansOfType(PluginManage.class);
+        beansOfType.forEach((k, v) -> {
+            System.out.println(k + " : " + v);
+        });
     }
 
 

@@ -9,30 +9,29 @@ import life.kaori.bot.common.util.ImageUtils;
 import life.kaori.bot.common.util.MessageUtil;
 import life.kaori.bot.config.PluginConfig;
 import life.kaori.bot.core.OperationUtil;
+import life.kaori.bot.plugins.common.PluginManage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
 import java.util.UUID;
-import java.util.regex.Matcher;
 
 /**
  * author: origin
  */
 @Component
 @Shiro
-public class Dao {
+public class Dao implements PluginManage {
 
-    private  final String name = this.getClass().getSimpleName();
+    private final String name = this.getClass().getSimpleName();
+    private final String nickName = "刀";
+    private final String help = """
+            命令: 几点了
+            """;
     private PluginConfig pluginConfig;
 
-    private File resource = CommonUtil.getPluginResourceDir("dao");
+    private File resource = CommonUtil.getPluginResourceDir(name.toLowerCase());
 
     @Autowired
     public void setPluginConfig(PluginConfig pluginConfig) {
