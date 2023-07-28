@@ -3,6 +3,7 @@ package life.kaori.bot.aop;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import life.kaori.bot.common.util.BanUtil;
+import life.kaori.bot.common.CommonUtil.*;
 import life.kaori.bot.config.PluginConfig;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -10,6 +11,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static life.kaori.bot.common.CommonUtil.getGroupMessageEvent;
+import static life.kaori.bot.common.CommonUtil.getPrivateMessageEvent;
 
 /**
  * author: origin
@@ -66,35 +73,8 @@ public class CommandAspect {
     @Around(value = "privatePrefixPoint()")
     public Object privatePrefixCheck(ProceedingJoinPoint pjp) throws Throwable {
         Object[] args = pjp.getArgs();
-
+        PrivateMessageEvent event = getPrivateMessageEvent(args);
         return pjp.proceed(args);
     }
 
-    private GroupMessageEvent getGroupMessageEvent(Object[] args) {
-        if (args.length >= 2) {
-            if (args[1] instanceof GroupMessageEvent) {
-                return (GroupMessageEvent) args[1];
-            }
-        }
-        for (Object arg : args) {
-            if (arg instanceof GroupMessageEvent) {
-                return (GroupMessageEvent) arg;
-            }
-        }
-        return null;
-    }
-
-    private PrivateMessageEvent getPrivateMessageEvent(Object[] args) {
-        if (args.length >= 2) {
-            if (args[1] instanceof PrivateMessageEvent) {
-                return (PrivateMessageEvent) args[1];
-            }
-        }
-        for (Object arg : args) {
-            if (arg instanceof PrivateMessageEvent) {
-                return (PrivateMessageEvent) arg;
-            }
-        }
-        return null;
-    }
 }

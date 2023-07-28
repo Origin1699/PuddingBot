@@ -1,4 +1,4 @@
-package life.kaori.bot.config.refresh;
+package life.kaori.bot.core.refresh;
 
 import org.springframework.context.ApplicationEvent;
 import org.springframework.jmx.export.annotation.ManagedResource;

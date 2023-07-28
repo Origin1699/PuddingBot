@@ -1,4 +1,4 @@
-package life.kaori.bot.config.refresh;
+package life.kaori.bot.core.refresh;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;

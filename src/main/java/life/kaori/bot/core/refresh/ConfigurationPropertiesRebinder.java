@@ -1,4 +1,4 @@
-package life.kaori.bot.config.refresh;
+package life.kaori.bot.core.refresh;
 
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;

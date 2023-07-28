@@ -20,4 +20,5 @@ bot-config:
   nick-name: "布丁"
   bot-id: '10001'
   prefix:
-  master: '10001'
+  master:
+    - '10001'

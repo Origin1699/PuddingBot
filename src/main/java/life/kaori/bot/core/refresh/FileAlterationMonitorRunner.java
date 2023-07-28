@@ -1,4 +1,4 @@
-package life.kaori.bot.config.refresh;
+package life.kaori.bot.core.refresh;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.monitor.FileAlterationMonitor;

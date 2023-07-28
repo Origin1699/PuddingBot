@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 /**
- *
  * author: origin
  */
 @Component
@@ -24,7 +23,7 @@ public class BanUtil {
         return byUserId.isPresent();
     }
 
-    public void ban(String userId){
+    public void ban(String userId) {
 //        repository.save(new Ban())
     }
 }

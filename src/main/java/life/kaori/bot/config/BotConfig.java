@@ -15,6 +15,6 @@ import java.util.List;
 public class BotConfig {
     private String nickName;
     private String botId;
-    private String master;
+    private List<Long> master;
     private String prefix;
 }

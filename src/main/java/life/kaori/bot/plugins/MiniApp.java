@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.util.List;
-import java.util.regex.Matcher;
 
 /**
  * author: origin
@@ -30,11 +28,6 @@ import java.util.regex.Matcher;
 public class MiniApp {
     private RestTemplate restTemplate;
 
-    @Autowired
-    public void setRestTemplate(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
     @GroupMessageHandler
     public void miniAppParseGA(Bot bot, GroupMessageEvent event) {
         String message = event.getMessage();
@@ -44,38 +37,19 @@ public class MiniApp {
         }
     }
 
-    @GroupMessageHandler(cmd = "")
-    public void miniAppParse2GA(Bot bot, GroupMessageEvent event, Matcher matcher) {
-        String message = event.getMessage();
-        if (!message.contains("com.tencent.miniapp_01")) return;
-        if (message.contains("哔哩哔哩")) {
-            biliMiniAppParse(bot, event);
-        }
-    }
-
-    @GroupMessageHandler(cmd = RegexConst.B23)
-    public void biliUriParseGA(Bot bot, GroupMessageEvent event, Matcher matcher) {
-        System.out.println(matcher);
-        String group = matcher.group(1);
-        System.out.println(group);
-    }
-
-
-    public void biliMiniAppParse(Bot bot, GroupMessageEvent event) {
+    private void biliMiniAppParse(Bot bot, GroupMessageEvent event) {
         try {
             List<ArrayMsg> json = event.getArrayMsg().stream().filter(msg -> msg.getType() == MsgTypeEnum.json).toList();
             String data = json.get(0).getData().get("data");
-//            String shortURL = RegexUtils.regexGroup(RegexConst.GET_URL_BV23, data, 1);
             String shortURL = JsonParser.parseString(data).getAsJsonObject().getAsJsonObject("meta").getAsJsonObject("detail_1").get("qqdocurl").getAsString();
             String url = RegexUtils.regexGroup(RegexConst.GET_URL_BVID, restTemplate.postForLocation(shortURL, null).toString(), 1);
             bot.sendGroupMsg(event.getGroupId(), buildBiliMsg(restTemplate.getForObject(Api.BiLI + url, BiliMiniAppDTO.class)), false);
-//            System.out.println(buildBiliMsg(restTemplate.getForObject(Api.BiLI + url, BiliMiniAppDTO.class)));
         } catch (Throwable throwable) {
             log.error(throwable.getMessage(), throwable);
         }
     }
 
-    public String buildBiliMsg(BiliMiniAppDTO dto) {
+    private String buildBiliMsg(BiliMiniAppDTO dto) {
         var data = dto.getData();
         var stat = data.getStat();
         var owner = data.getOwner();
@@ -86,5 +60,10 @@ public class MiniApp {
                 .text("\n观看: " + stat.getView() + "  弹幕: " + stat.getDanmaku())
                 .text("\nhttps://www.bilibili.com/video/" + data.getBvid())
                 .build();
+    }
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 }
