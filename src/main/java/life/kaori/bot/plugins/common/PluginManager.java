@@ -38,7 +38,7 @@ public class PluginManager {
     }
 
     @GroupMessageHandler(cmd = "^(开启|关闭)\\s(.*)?$")
-    public void EnablePluginGA(Bot bot, GroupMessageEvent event, Matcher matcher) {
+    public void EnablePlugin(Bot bot, GroupMessageEvent event, Matcher matcher) {
         Long groupId = event.getGroupId();
         if (!authUtil.groupAuth(event)) {
             bot.sendGroupMsg(groupId, "您不是群主或管理员，因此没有操作权限。", false);
@@ -55,17 +55,20 @@ public class PluginManager {
     }
 
     @PrivateMessageHandler(cmd = "^(开启|关闭)\\s(.*)?$")
-    public void EnablePluginPA(Bot bot, PrivateMessageEvent event, Matcher matcher) {
+    public void EnablePlugin(Bot bot, PrivateMessageEvent event, Matcher matcher) {
         System.out.println(event.getUserId());
         System.out.println("111");
     }
 
-    @AnyMessageHandler(cmd = "^[帮助|help]$")
-    public void getHelp(Bot bot, AnyMessageEvent event) {
-        Long groupId = event.getGroupId();
-        if (groupId == null || groupId == 0) {
-            
-        }
+    @PrivateMessageHandler(cmd = "^[帮助|help]\\s?(.*)?$")
+    public void getHelp(Bot bot, PrivateMessageEvent event, Matcher matcher) {
+//        Long groupId = event.getGroupId();
+//        if (groupId == null || groupId == 0) {
+//
+//        }
+        System.out.println(matcher.group());
+        System.out.println(matcher.group(1));
+        System.out.println(event.getMessage());
     }
 
     @Autowired

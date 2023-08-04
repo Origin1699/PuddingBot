@@ -23,9 +23,7 @@ public class AuthUtil {
 
 
     public void masterCheck(MessageEvent messageEvent) {
-        if (!config.getMaster().contains(messageEvent.getUserId())) {
-            throw ExceptionMsg.AUTH_ERROR;
-        }
+        if (!config.getMaster().contains(messageEvent.getUserId())) throw ExceptionMsg.AUTH_ERROR;
     }
 
     private static boolean isAdministrator(Bot bot) {

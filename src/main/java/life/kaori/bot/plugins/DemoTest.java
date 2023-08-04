@@ -10,7 +10,7 @@ import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.enums.AtEnum;
 import life.kaori.bot.config.BotConfig;
-import life.kaori.bot.plugins.common.PluginManage;
+import life.kaori.bot.core.PluginManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

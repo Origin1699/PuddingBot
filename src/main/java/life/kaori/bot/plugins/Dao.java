@@ -9,7 +9,7 @@ import life.kaori.bot.common.util.ImageUtils;
 import life.kaori.bot.common.util.MessageUtil;
 import life.kaori.bot.config.PluginConfig;
 import life.kaori.bot.core.OperationUtil;
-import life.kaori.bot.plugins.common.PluginManage;
+import life.kaori.bot.core.PluginManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +39,7 @@ public class Dao implements PluginManage {
     }
 
     @GroupMessageHandler(cmd = "^几点了")
-    public void daoGA(Bot bot, GroupMessageEvent event) {
+    public void dao(Bot bot, GroupMessageEvent event) {
         OperationUtil.exec(bot, event, name, () -> {
             File tempFile = File.createTempFile(UUID.randomUUID().toString(), ".jpg");
             ImageUtils.pressText(CommonUtil.getCurrentDate(), CommonUtil.getRandomFile(resource), tempFile, null, 0, Color.BLACK, 55, 0, -210, 1);

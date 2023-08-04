@@ -17,4 +17,21 @@ public class BotConfig {
     private String botId;
     private List<Long> master;
     private String prefix;
+    private BotProxy proxy;
+    private ChatGPT chatGPT;
+
+    @Data
+    public static class BotProxy {
+        private String host;
+        private int port;
+        private String type;
+    }
+
+    @Data
+    public static class ChatGPT {
+        private String token;
+        private int timeout;
+        private String module;
+
+    }
 }

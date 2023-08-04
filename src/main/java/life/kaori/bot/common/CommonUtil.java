@@ -2,7 +2,10 @@ package life.kaori.bot.common;
 
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
+import life.kaori.bot.common.constant.BotStrings;
+import life.kaori.bot.core.exception.BotException;
 import org.springframework.boot.system.ApplicationHome;
 
 import java.io.File;
@@ -36,6 +39,15 @@ public class CommonUtil {
         return new File(resourceDir, pluginName);
     }
 
+    public static File getResourceFile(String filename) {
+        File file = new File(resourceDir, filename);
+        if (file.exists()) {
+            return file;
+        } else {
+            throw BotException.create(BotStrings.RESOURCE_FILE_NOT_EXISTS, filename);
+        }
+    }
+
     public static File getRandomFile(File file) {
         File[] list = file.listFiles();
         if (list != null && list.length > 0) {
@@ -64,7 +76,7 @@ public class CommonUtil {
         return getMessageEvent(args, AnyMessageEvent.class);
     }
 
-    public static  <T> T getMessageEvent(Object[] args, Class<T> type) {
+    public static <T> T getMessageEvent(Object[] args, Class<T> type) {
         for (Object obj : args) {
             if (type.isInstance(obj)) {
                 return type.cast(obj);
@@ -72,4 +84,13 @@ public class CommonUtil {
         }
         return null;
     }
+
+    public static MessageEvent getMessageEvent(Object[] args) {
+        for (Object obj : args) {
+            if (obj instanceof MessageEvent event)
+                return event;
+        }
+        return null;
+    }
+
 }

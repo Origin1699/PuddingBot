@@ -30,12 +30,12 @@ public class BotManager {
     }
 
     @PrivateMessageHandler(cmd = "^[退出?|加入?][群|群组]\\s([0-9]*)$")
-    public void groupPA(Bot bot, PrivateMessageEvent event, Matcher matcher) {
+    public void group(Bot bot, PrivateMessageEvent event, Matcher matcher) {
         OperationUtil.exec(bot, event, name, () -> {
             authUtil.masterCheck(event);
             Long groupId = Long.parseLong(matcher.group(1));
             if (event.getMessage().contains("退")) {
-                AssertUtil.notEmpty(bot.getGroupList().getData().stream().filter(groupInfoResp -> groupId.equals(groupInfoResp.getGroupId())).toList(), new String("没有加入该群捏。"));
+                AssertUtil.notEmpty(bot.getGroupList().getData().stream().filter(groupInfoResp -> groupId.equals(groupInfoResp.getGroupId())).toList(), "没有加入该群捏。");
                 bot.setGroupLeave(groupId, false);
             } else {
                 MessageUtil.sendPrivateMsg(bot, event, "无法主动加群捏！请邀请我加入群组捏。");

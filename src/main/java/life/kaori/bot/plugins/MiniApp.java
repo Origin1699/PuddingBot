@@ -9,16 +9,19 @@ import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
 import life.kaori.bot.common.constant.RegexConst;
+import life.kaori.bot.common.util.AssertUtil;
 import life.kaori.bot.common.util.RegexUtils;
-import life.kaori.bot.config.Api;
+import life.kaori.bot.common.constant.Api;
+import life.kaori.bot.core.OperationUtil;
 import life.kaori.bot.entity.dto.BiliMiniAppDTO;
-import life.kaori.bot.plugins.common.PluginManage;
+import life.kaori.bot.core.PluginManage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * author: origin
@@ -37,32 +40,50 @@ public class MiniApp implements PluginManage {
             """;
 
     @GroupMessageHandler
-    public void miniAppParseGA(Bot bot, GroupMessageEvent event) {
+    public void miniAppParse(Bot bot, GroupMessageEvent event) {
         String message = event.getMessage();
         if (!message.contains("com.tencent.miniapp_01")) return;
         if (message.contains("哔哩哔哩")) {
             biliMiniAppParse(bot, event);
         }
     }
-    @GroupMessageHandler(cmd = "^http?s://bv.23.")
+
+    @GroupMessageHandler(cmd = "^https?://b23.tv/([A-Za-z1-9]+)")
+    public void parseShortUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
+        OperationUtil.exec(bot, event, name, () -> {
+            String shortURL = matcher.group();
+            shortURL = shortURL.replace("http:", "https:");
+            String bv = getBv(shortURL);
+            bot.sendGroupMsg(event.getGroupId(), buildBiliMsg(bv), false);
+        });
+    }
+
+    @GroupMessageHandler(cmd = "https?://[w]{0,3}\\.?bilibili.com/video/([A-Za-z0-9]+)")
+    public void parseUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
+        OperationUtil.exec(bot, event, name, () -> {
+            String shortURL = matcher.group();
+            shortURL = shortURL.replace("http:", "https:");
+            String bv = getBv(shortURL);
+        });
+    }
 
     private void biliMiniAppParse(Bot bot, GroupMessageEvent event) {
-        try {
+        OperationUtil.exec(bot, event, name, () -> {
             List<ArrayMsg> json = event.getArrayMsg().stream().filter(msg -> msg.getType() == MsgTypeEnum.json).toList();
             String data = json.get(0).getData().get("data");
             String shortURL = JsonParser.parseString(data).getAsJsonObject().getAsJsonObject("meta").getAsJsonObject("detail_1").get("qqdocurl").getAsString();
-            String url = parseShortURL(shortURL);
-            bot.sendGroupMsg(event.getGroupId(), buildBiliMsg(restTemplate.getForObject(Api.BiLI + url, BiliMiniAppDTO.class)), false);
-        } catch (Throwable throwable) {
-            log.error(throwable.getMessage(), throwable);
-        }
+            String bv = getBv(shortURL);
+            bot.sendGroupMsg(event.getGroupId(), buildBiliMsg(bv), false);
+        });
     }
 
-    private String parseShortURL(String shortURL) {
-        return RegexUtils.regexGroup(RegexConst.GET_URL_BVID, restTemplate.postForLocation(shortURL, null).toString(), 1);
+    private String getBv(String shortUrl) {
+        return RegexUtils.regexGroup(RegexConst.GET_URL_BVID, restTemplate.postForLocation(shortUrl, null).toString(), 1);
     }
 
-    private String buildBiliMsg(BiliMiniAppDTO dto) {
+    private String buildBiliMsg(String bv) {
+        BiliMiniAppDTO dto = restTemplate.getForObject(Api.BiLI + bv, BiliMiniAppDTO.class);
+        AssertUtil.isNull(dto, "");
         var data = dto.getData();
         var stat = data.getStat();
         var owner = data.getOwner();

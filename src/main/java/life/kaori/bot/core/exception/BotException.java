@@ -12,7 +12,7 @@ public class BotException extends RuntimeException {
     }
 
 
-    public static BotException create(BotStrings botStrings, Object[] args) {
+    public static BotException create(BotStrings botStrings, Object... args) {
         return new BotException(botStrings.getMessage(args));
     }
 }

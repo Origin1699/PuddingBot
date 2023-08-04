@@ -1,9 +1,9 @@
 package life.kaori.bot.aop;
 
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import life.kaori.bot.common.util.BanUtil;
-import life.kaori.bot.common.CommonUtil.*;
 import life.kaori.bot.config.PluginConfig;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -12,11 +12,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static life.kaori.bot.common.CommonUtil.getGroupMessageEvent;
-import static life.kaori.bot.common.CommonUtil.getPrivateMessageEvent;
+import static life.kaori.bot.common.CommonUtil.*;
 
 /**
  * author: origin
@@ -40,41 +36,42 @@ public class CommandAspect {
     }
 
     /**
-     * 群组命令切点
+     * 插件命令切点
      */
-    @Pointcut("execution(* life.kaori.bot.plugins..*.*GA(..)))")
+    @Pointcut("execution(* life.kaori.bot.plugins..*.*(..)))")
     private void groupPrefixPoint() {
     }
-
     /**
-     * 私人命令切点
+     * 部分排除插件命令切点
      */
-    @Pointcut("execution(* life.kaori.bot.plugins..*.*PA(..)))")
-    private void privatePrefixPoint() {
+    @Pointcut("execution(* life.kaori.bot.plugins.internal..*(..))")
+    private void internalPrefixPoint() {
     }
 
-    @Around(value = "groupPrefixPoint()")
+    @Around(value = "groupPrefixPoint() && !internalPrefixPoint()")
     public Object groupPrefixCheck(ProceedingJoinPoint pjp) throws Throwable {
         String pluginName = pjp.getTarget().getClass().getSimpleName();
         Object[] args = pjp.getArgs();
-        GroupMessageEvent event = getGroupMessageEvent(args);
-        Long groupId = event.getGroupId();
-        String userId = event.getSender().getUserId();
-        if (banUtil.isBan(userId)) {
-
+        if (checkAuth(getMessageEvent(args), pluginName)) {
+            return pjp.proceed(args);
         }
-        if (!pluginConfig.pluginEnableCheck(pluginName, groupId)) {
-
-        }
-
         return pjp.proceed(args);
     }
 
-    @Around(value = "privatePrefixPoint()")
-    public Object privatePrefixCheck(ProceedingJoinPoint pjp) throws Throwable {
-        Object[] args = pjp.getArgs();
-        PrivateMessageEvent event = getPrivateMessageEvent(args);
-        return pjp.proceed(args);
+    private boolean checkAuth(MessageEvent messageEvent, String pluginName) {
+        if (messageEvent instanceof GroupMessageEvent event) {
+            Long groupId = event.getGroupId();
+            String userId = event.getSender().getUserId();
+            if (banUtil.isBan(userId)) {
+                return false;
+            }
+            if (!pluginConfig.pluginEnableCheck(pluginName, groupId)) {
+                return false;
+            }
+            return true;
+        } else if (messageEvent instanceof PrivateMessageEvent event) {
+            return true;
+        }
+        return false;
     }
-
 }

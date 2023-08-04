@@ -33,6 +33,9 @@ public class BotStrings {
     public static final BotStrings PLUGIN_OPERATE = new BotStrings("插件 {0}");
     public static final BotStrings PLUGIN_ENABLE_USE = new BotStrings("插件 {0} 未开启");
 
+    public static final BotStrings RESOURCE_FILE_NOT_EXISTS = new BotStrings("资源 {} 文件不存在");
+    public static final BotStrings RESOURCE_FILE_PARSE_ERROR = new BotStrings("资源文件错误或格式不对");
+
     public BotException exception(Object... args) {
         return BotException.create(this, args);
     }

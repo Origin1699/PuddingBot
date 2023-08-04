@@ -1,4 +1,4 @@
-package life.kaori.bot.plugins.common;
+package life.kaori.bot.core;
 
 /**
  * 需要管理的插件

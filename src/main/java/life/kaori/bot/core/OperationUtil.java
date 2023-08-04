@@ -16,11 +16,10 @@ public class OperationUtil {
     public static void exec(Bot bot, MessageEvent event, String name, Executor executor) {
         try {
             executor.executor();
-
         } catch (BotException botException) {
             sendMsg(bot, event, botException.getMessage());
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

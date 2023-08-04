@@ -1,4 +1,4 @@
-package life.kaori.bot.config;
+package life.kaori.bot.common.constant;
 
 /**
  * author: origin
