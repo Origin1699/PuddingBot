@@ -3,6 +3,7 @@ package life.kaori.bot.entity.chatgpt;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
 @Data
 @Table
 @Entity(name = "chatgpt_player")
-public class ChatGPTPlayer {
+public class ChatGPTPlayer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
@@ -19,16 +20,19 @@ public class ChatGPTPlayer {
     @Column
     private String name;
 
-
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "player_id")
     private List<ChatGPTPrompt> list;
+
+    @Column
+    private int type;
 
     public ChatGPTPlayer() {
     }
 
-    public ChatGPTPlayer(String name, List<ChatGPTPrompt> list) {
+    public ChatGPTPlayer(String name, List<ChatGPTPrompt> list, int type) {
         this.name = name;
         this.list = list;
+        this.type = type;
     }
 }

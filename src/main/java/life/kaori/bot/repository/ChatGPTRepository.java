@@ -12,4 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface ChatGPTRepository extends JpaRepository<ChatGPTEntity, Long> {
 
     void deleteByUserid(Long userid);
+
+    ChatGPTEntity findByUserid(Long userid);
 }

@@ -4,6 +4,7 @@ import com.theokanning.openai.completion.chat.ChatMessageRole;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * author: origin
@@ -11,13 +12,14 @@ import javax.persistence.*;
 @Data
 @Table
 @Entity(name = "chatgpt_prompt")
-public class ChatGPTPrompt {
+public class ChatGPTPrompt implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private ChatMessageRole role;
 
     @Column

@@ -3,6 +3,7 @@ package life.kaori.bot.entity.chatgpt;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * author: origin
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Data
 @Table
 @Entity(name = "chatgpt_entity")
-public class ChatGPTEntity {
+public class ChatGPTEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

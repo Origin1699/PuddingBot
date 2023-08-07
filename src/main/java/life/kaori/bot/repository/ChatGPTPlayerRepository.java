@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface ChatGPTPlayerRepository extends JpaRepository<ChatGPTPlayer, Long> {
 
     void deleteByName(String role);
+    ChatGPTPlayer findByName(String role);
+    void deleteByType(int type);
 }
