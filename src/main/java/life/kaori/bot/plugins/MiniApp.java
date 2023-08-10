@@ -12,7 +12,7 @@ import life.kaori.bot.common.constant.RegexConst;
 import life.kaori.bot.common.util.AssertUtil;
 import life.kaori.bot.common.util.RegexUtils;
 import life.kaori.bot.common.constant.Api;
-import life.kaori.bot.core.OperationUtil;
+import life.kaori.bot.core.ExecutorUtil;
 import life.kaori.bot.entity.dto.BiliMiniAppDTO;
 import life.kaori.bot.core.PluginManage;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +50,7 @@ public class MiniApp implements PluginManage {
 
     @GroupMessageHandler(cmd = "^https?://b23.tv/([A-Za-z1-9]+)")
     public void parseShortUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
-        OperationUtil.exec(bot, event, name, () -> {
+        ExecutorUtil.exec(bot, event, name, () -> {
             String shortURL = matcher.group();
             shortURL = shortURL.replace("http:", "https:");
             String bv = getBv(shortURL);
@@ -60,7 +60,7 @@ public class MiniApp implements PluginManage {
 
     @GroupMessageHandler(cmd = "https?://[w]{0,3}\\.?bilibili.com/video/([A-Za-z0-9]+)")
     public void parseUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
-        OperationUtil.exec(bot, event, name, () -> {
+        ExecutorUtil.exec(bot, event, name, () -> {
             String shortURL = matcher.group();
             shortURL = shortURL.replace("http:", "https:");
             String bv = getBv(shortURL);
@@ -68,7 +68,7 @@ public class MiniApp implements PluginManage {
     }
 
     private void biliMiniAppParse(Bot bot, GroupMessageEvent event) {
-        OperationUtil.exec(bot, event, name, () -> {
+        ExecutorUtil.exec(bot, event, name, () -> {
             List<ArrayMsg> json = event.getArrayMsg().stream().filter(msg -> msg.getType() == MsgTypeEnum.json).toList();
             String data = json.get(0).getData().get("data");
             String shortURL = JsonParser.parseString(data).getAsJsonObject().getAsJsonObject("meta").getAsJsonObject("detail_1").get("qqdocurl").getAsString();

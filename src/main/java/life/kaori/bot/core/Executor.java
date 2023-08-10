@@ -7,5 +7,5 @@ import java.io.IOException;
  */
 @FunctionalInterface
 public interface Executor {
-    void executor() throws IOException;
+    void executor() throws Exception;
 }

@@ -5,12 +5,14 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 
 /**
  * author: origin
  */
+@Slf4j
 public class MessageUtil {
     public static final String BASE64_PREFIX = "base64://";
 

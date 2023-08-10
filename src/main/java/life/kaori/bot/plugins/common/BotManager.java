@@ -7,9 +7,7 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import life.kaori.bot.common.util.AssertUtil;
 import life.kaori.bot.common.util.AuthUtil;
 import life.kaori.bot.common.util.MessageUtil;
-import life.kaori.bot.core.OperationUtil;
-import life.kaori.bot.core.exception.ExceptionMsg;
-import lombok.AllArgsConstructor;
+import life.kaori.bot.core.ExecutorUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
@@ -31,7 +29,7 @@ public class BotManager {
 
     @PrivateMessageHandler(cmd = "^[退出?|加入?][群|群组]\\s([0-9]*)$")
     public void group(Bot bot, PrivateMessageEvent event, Matcher matcher) {
-        OperationUtil.exec(bot, event, name, () -> {
+        ExecutorUtil.exec(bot, event, name, () -> {
             authUtil.masterCheck(event);
             Long groupId = Long.parseLong(matcher.group(1));
             if (event.getMessage().contains("退")) {

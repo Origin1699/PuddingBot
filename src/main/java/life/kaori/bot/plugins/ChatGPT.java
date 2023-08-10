@@ -6,7 +6,6 @@ import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.core.Bot;
-import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
@@ -20,7 +19,7 @@ import life.kaori.bot.common.util.AuthUtil;
 import life.kaori.bot.common.util.FileUtils;
 import life.kaori.bot.common.util.MessageUtil;
 import life.kaori.bot.config.BotConfig;
-import life.kaori.bot.core.OperationUtil;
+import life.kaori.bot.core.ExecutorUtil;
 import life.kaori.bot.entity.chatgpt.ChatGPTEntity;
 import life.kaori.bot.entity.chatgpt.ChatGPTPrompt;
 import life.kaori.bot.entity.chatgpt.ChatGPTPlayer;
@@ -58,7 +57,7 @@ public class ChatGPT {
 
     @GroupMessageHandler(cmd = "^(?i)chat\\s(?<action>set|del|show|reload|add)?\\s?(?<prompt>[\\s\\S]+?)?$")
     public void chat(Bot bot, GroupMessageEvent event, Matcher matcher) {
-        OperationUtil.exec(bot, event, ChatGPT.class.getSimpleName(), () -> {
+        ExecutorUtil.exec(bot, event, ChatGPT.class.getSimpleName(), () -> {
             String prompt = matcher.group("prompt").trim();
             String action = matcher.group("action");
             if (action == null) {
@@ -72,6 +71,7 @@ public class ChatGPT {
                     case "delete" -> delete(bot, event, prompt);
                 }
             }
+
         });
     }
 
@@ -115,13 +115,6 @@ public class ChatGPT {
     }
 
     private void set(Bot bot, GroupMessageEvent event, String prompt) {
-        ChatGPTPlayer byName = playerRepository.findByName(prompt);
-        if (byName == null){
-            MessageUtil.sendGroupMsg(bot,event, "prompt " + prompt + "不存在");
-            return;
-        }
-        repository.save(new ChatGPTEntity(event.getUserId(), byName));
-        MessageUtil.sendGroupMsg(bot,event, "prompt设置成功");
     }
 
     public void add(Bot bot, GroupMessageEvent event, String cmd) {
@@ -133,7 +126,8 @@ public class ChatGPT {
     }
 
     public void reload(Bot bot, MessageEvent event) {
-        OperationUtil.exec(bot, event, ChatGPT.class.getSimpleName(), () -> {
+        ExecutorUtil.exec(bot, event, ChatGPT.class.getSimpleName(), () -> {
+            Long userId = event.getUserId();
             authUtil.masterCheck(event);
             File file = CommonUtil.getResourceFile("prompts.json");
             String json = FileUtils.readFile(file);
