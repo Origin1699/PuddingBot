@@ -2,6 +2,7 @@ package life.kaori.bot.plugins.common;
 
 import com.mikuac.shiro.annotation.AnyMessageHandler;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
+import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
@@ -37,7 +38,8 @@ public class PluginManager {
         this.botConfig = botConfig;
     }
 
-    @GroupMessageHandler(cmd = "^(开启|关闭)\\s(.*)?$")
+    @GroupMessageHandler
+    @MessageHandlerFilter(cmd = "^(开启|关闭)\\s(.*)?$")
     public void EnablePlugin(Bot bot, GroupMessageEvent event, Matcher matcher) {
         Long groupId = event.getGroupId();
         if (!authUtil.groupAuth(event)) {
@@ -54,13 +56,15 @@ public class PluginManager {
 
     }
 
-    @PrivateMessageHandler(cmd = "^(开启|关闭)\\s(.*)?$")
+    @PrivateMessageHandler
+    @MessageHandlerFilter(cmd = "^(开启|关闭)\\s(.*)?$")
     public void EnablePlugin(Bot bot, PrivateMessageEvent event, Matcher matcher) {
         System.out.println(event.getUserId());
         System.out.println("111");
     }
 
-    @PrivateMessageHandler(cmd = "^[帮助|help]\\s?(.*)?$")
+    @PrivateMessageHandler
+    @MessageHandlerFilter(cmd = "^[帮助|help]\\s?(.*)?$")
     public void getHelp(Bot bot, PrivateMessageEvent event, Matcher matcher) {
 //        Long groupId = event.getGroupId();
 //        if (groupId == null || groupId == 0) {

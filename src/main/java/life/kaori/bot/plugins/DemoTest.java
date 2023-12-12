@@ -2,6 +2,7 @@ package life.kaori.bot.plugins;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
+import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
@@ -28,7 +29,8 @@ public class DemoTest implements PluginManage {
     private BotConfig config;
 
     // 符合 cmd 正则表达式的消息会被响应
-    @PrivateMessageHandler(cmd = "hi")
+    @PrivateMessageHandler
+    @MessageHandlerFilter(cmd = "hi")
     public void fun1(Bot bot, PrivateMessageEvent event, Matcher matcher) {
         // 构建消息
 //        String sendMsg = MsgUtils.builder().face(66).text("Hello, this is shiro demo.").build();
@@ -40,7 +42,8 @@ public class DemoTest implements PluginManage {
     }
 
     // 如果 at 参数设定为 AtEnum.NEED 则只有 at 了机器人的消息会被响应
-    @GroupMessageHandler(at = AtEnum.NEED)
+    @GroupMessageHandler
+    @MessageHandlerFilter(at = AtEnum.NEED)
     public void fun2(Bot bot, GroupMessageEvent event, Matcher matcher) {
         // 以注解方式调用可以根据自己的需要来为方法设定参数
         // 例如群组消息可以传递 GroupMessageEvent, Bot, Matcher 多余的参数会被设定为 null
@@ -65,7 +68,8 @@ public class DemoTest implements PluginManage {
 //        System.out.println("---------AnyMessageHandler------------");
     }
 
-    @PrivateMessageHandler(cmd = "hi")
+    @PrivateMessageHandler
+    @MessageHandlerFilter(cmd = "hi")
     public void fun4(Bot bot, PrivateMessageEvent event) {
 //        try {
 //            throw BotStrings.PLUGIN_OPERATE.exception("xxxxx");

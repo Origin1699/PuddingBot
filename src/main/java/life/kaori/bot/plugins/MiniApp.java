@@ -2,6 +2,7 @@ package life.kaori.bot.plugins;
 
 import com.google.gson.JsonParser;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
+import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.core.Bot;
@@ -48,7 +49,8 @@ public class MiniApp implements PluginManage {
         }
     }
 
-    @GroupMessageHandler(cmd = "^https?://b23.tv/([A-Za-z1-9]+)")
+    @GroupMessageHandler
+    @MessageHandlerFilter(cmd = "^https?://b23.tv/([A-Za-z1-9]+)")
     public void parseShortUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, name, () -> {
             String shortURL = matcher.group();
@@ -58,7 +60,8 @@ public class MiniApp implements PluginManage {
         });
     }
 
-    @GroupMessageHandler(cmd = "https?://[w]{0,3}\\.?bilibili.com/video/([A-Za-z0-9]+)")
+    @GroupMessageHandler
+    @MessageHandlerFilter(cmd = "https?://[w]{0,3}\\.?bilibili.com/video/([A-Za-z0-9]+)")
     public void parseUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, name, () -> {
             String shortURL = matcher.group();

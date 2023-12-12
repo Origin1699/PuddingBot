@@ -61,7 +61,7 @@ public class CommandAspect {
     private boolean checkAuth(MessageEvent messageEvent, String pluginName) {
         if (messageEvent instanceof GroupMessageEvent event) {
             Long groupId = event.getGroupId();
-            String userId = event.getSender().getUserId();
+            String userId = event.getSender().getUserId().toString();
             if (banUtil.isBan(userId)) {
                 return false;
             }

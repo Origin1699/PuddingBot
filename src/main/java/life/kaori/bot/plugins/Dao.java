@@ -1,6 +1,7 @@
 package life.kaori.bot.plugins;
 
 import com.mikuac.shiro.annotation.GroupMessageHandler;
+import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
@@ -38,7 +39,8 @@ public class Dao implements PluginManage {
         this.pluginConfig = pluginConfig;
     }
 
-    @GroupMessageHandler(cmd = "^几点了")
+    @GroupMessageHandler
+    @MessageHandlerFilter(cmd = "^几点了")
     public void dao(Bot bot, GroupMessageEvent event) {
         ExecutorUtil.exec(bot, event, name, () -> {
             File tempFile = File.createTempFile(UUID.randomUUID().toString(), ".jpg");

@@ -3,6 +3,7 @@ package life.kaori.bot.plugins;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
+import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.core.Bot;
@@ -55,7 +56,8 @@ public class ChatGPT {
     private Vector lock = new Vector<>();
 
 
-    @GroupMessageHandler(cmd = "^(?i)chat\\s(?<action>set|del|show|reload|add)?\\s?(?<prompt>[\\s\\S]+?)?$")
+    @GroupMessageHandler
+    @MessageHandlerFilter(cmd = "^(?i)chat\\s(?<action>set|del|show|reload|add)?\\s?(?<prompt>[\\s\\S]+?)?$")
     public void chat(Bot bot, GroupMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, ChatGPT.class.getSimpleName(), () -> {
             String prompt = matcher.group("prompt").trim();

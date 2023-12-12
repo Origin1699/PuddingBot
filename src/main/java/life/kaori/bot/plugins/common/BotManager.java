@@ -1,5 +1,6 @@
 package life.kaori.bot.plugins.common;
 
+import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
@@ -27,7 +28,8 @@ public class BotManager {
         this.authUtil = authUtil;
     }
 
-    @PrivateMessageHandler(cmd = "^[退出?|加入?][群|群组]\\s([0-9]*)$")
+    @PrivateMessageHandler
+    @MessageHandlerFilter(cmd = "^[退出?|加入?][群|群组]\\s([0-9]*)$")
     public void group(Bot bot, PrivateMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, name, () -> {
             authUtil.masterCheck(event);
