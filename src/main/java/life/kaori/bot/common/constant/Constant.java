@@ -3,7 +3,6 @@ package life.kaori.bot.common.constant;
 import java.nio.charset.Charset;
 
 /**
- *
  * author: origin
  */
 public class Constant {

@@ -21,12 +21,13 @@ import life.kaori.bot.common.util.FileUtils;
 import life.kaori.bot.common.util.MessageUtil;
 import life.kaori.bot.config.BotConfig;
 import life.kaori.bot.core.ExecutorUtil;
+import life.kaori.bot.core.PluginManage;
 import life.kaori.bot.entity.chatgpt.ChatGPTEntity;
 import life.kaori.bot.entity.chatgpt.ChatGPTPrompt;
 import life.kaori.bot.entity.chatgpt.ChatGPTPlayer;
 import life.kaori.bot.repository.ChatGPTPlayerRepository;
 import life.kaori.bot.repository.ChatGPTRepository;
-import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -40,7 +41,7 @@ import java.util.regex.Matcher;
  */
 @Component
 @Shiro
-public class ChatGPT {
+public class ChatGPT implements PluginManage {
 
     @Autowired
     private AuthUtil authUtil;
@@ -60,9 +61,11 @@ public class ChatGPT {
     @MessageHandlerFilter(cmd = "^(?i)chat\\s(?<action>set|del|show|reload|add)?\\s?(?<prompt>[\\s\\S]+?)?$")
     public void chat(Bot bot, GroupMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, ChatGPT.class.getSimpleName(), () -> {
-            String prompt = matcher.group("prompt").trim();
+            String prompt = matcher.group("prompt");
             String action = matcher.group("action");
             if (action == null) {
+                if (Strings.isBlank(prompt))
+                    return;
                 chat(bot, event, prompt);
             } else {
                 switch (action) {

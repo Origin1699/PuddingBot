@@ -55,6 +55,11 @@ public class PluginManager {
         }
 
     }
+    @GroupMessageHandler
+    @MessageHandlerFilter(cmd = "^插件列表$")
+    public void pluginManage(){
+
+    }
 
     @PrivateMessageHandler
     @MessageHandlerFilter(cmd = "^(开启|关闭)\\s(.*)?$")

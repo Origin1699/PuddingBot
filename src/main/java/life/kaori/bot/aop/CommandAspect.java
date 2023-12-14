@@ -41,6 +41,7 @@ public class CommandAspect {
     @Pointcut("execution(* life.kaori.bot.plugins..*.*(..)))")
     private void groupPrefixPoint() {
     }
+
     /**
      * 部分排除插件命令切点
      */
@@ -48,15 +49,36 @@ public class CommandAspect {
     private void internalPrefixPoint() {
     }
 
-    @Around(value = "groupPrefixPoint() && !internalPrefixPoint()")
+    @Pointcut("@annotation(com.mikuac.shiro.annotation.GroupMessageHandler)")
+    private void groupPoint() {
+    }
+
+    @Pointcut("@annotation(com.mikuac.shiro.annotation.PrivateMessageHandler)")
+    private void privatePoint() {
+    }
+
+    @Around(value = "groupPoint()")
     public Object groupPrefixCheck(ProceedingJoinPoint pjp) throws Throwable {
         String pluginName = pjp.getTarget().getClass().getSimpleName();
-        Object[] args = pjp.getArgs();
-        if (checkAuth(getMessageEvent(args), pluginName)) {
-            return pjp.proceed(args);
+        GroupMessageEvent event = (GroupMessageEvent) getMessageEvent(pjp.getArgs());
+
+        if (checkAuth(getMessageEvent(pjp.getArgs()), pluginName)) {
+            return pjp.proceed(pjp.getArgs());
         }
+        return pjp.proceed(pjp.getArgs());
+    }
+
+    @Around(value = "privatePoint()")
+    public Object privatePrefixCheck(ProceedingJoinPoint pjp) throws Throwable {
+        String pluginName = pjp.getTarget().getClass().getSimpleName();
+        Object[] args = pjp.getArgs();
+
+//        if (checkAuth(event, pluginName)) {
+//            return pjp.proceed(args);
+//        }
         return pjp.proceed(args);
     }
+
 
     private boolean checkAuth(MessageEvent messageEvent, String pluginName) {
         if (messageEvent instanceof GroupMessageEvent event) {
