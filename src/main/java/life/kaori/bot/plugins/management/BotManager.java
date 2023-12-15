@@ -1,4 +1,4 @@
-package life.kaori.bot.plugins.common;
+package life.kaori.bot.plugins.management;
 
 import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;

@@ -1,5 +1,6 @@
 package life.kaori.bot.common;
 
+import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
@@ -89,6 +90,14 @@ public class CommonUtil {
         for (Object obj : args) {
             if (obj instanceof MessageEvent event)
                 return event;
+        }
+        return null;
+    }
+
+    public static Bot getBot(Object[] args) {
+        for (Object obj : args) {
+            if (obj instanceof Bot bot)
+                return bot;
         }
         return null;
     }

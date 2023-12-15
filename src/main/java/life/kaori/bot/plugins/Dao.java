@@ -8,14 +8,13 @@ import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import life.kaori.bot.common.CommonUtil;
 import life.kaori.bot.common.util.ImageUtils;
 import life.kaori.bot.common.util.MessageUtil;
-import life.kaori.bot.config.PluginConfig;
 import life.kaori.bot.core.ExecutorUtil;
-import life.kaori.bot.core.PluginManage;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -23,21 +22,18 @@ import java.util.UUID;
  */
 @Component
 @Shiro
-public class Dao implements PluginManage {
+public class Dao implements Plugin {
 
+    @Getter
     private final String name = this.getClass().getSimpleName();
-    private final String nickName = "刀";
+    @Getter
+    private final List<String> nickName = List.of("刀","几点了");
+    @Getter
     private final String help = """
+            根据当前时间生成图片
             命令: 几点了
             """;
-    private PluginConfig pluginConfig;
-
     private File resource = CommonUtil.getPluginResourceDir(name.toLowerCase());
-
-    @Autowired
-    public void setPluginConfig(PluginConfig pluginConfig) {
-        this.pluginConfig = pluginConfig;
-    }
 
     @GroupMessageHandler
     @MessageHandlerFilter(cmd = "^几点了")

@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 @Repository
 public interface GroupPluginRepository extends JpaRepository<GroupPluginEntity, Integer> {
-    Optional<GroupPluginEntity> findByGroupIdAndPluginName(Long groupId, String pluginName);
+    GroupPluginEntity findByGroupIdAndPluginName(Long groupId, String pluginName);
 
     void deleteByPluginName(String pluginName);
 

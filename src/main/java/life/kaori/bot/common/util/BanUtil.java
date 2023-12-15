@@ -18,8 +18,8 @@ public class BanUtil {
         this.repository = repository;
     }
 
-    public boolean isBan(String userId) {
-        Optional<BanEntity> byUserId = repository.findByUserId(Long.parseLong(userId));
+    public boolean isBan(Long userId) {
+        Optional<BanEntity> byUserId = repository.findByUserId(userId);
         return byUserId.isPresent();
     }
 

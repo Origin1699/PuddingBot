@@ -2,6 +2,7 @@ package life.kaori.bot.common.util;
 
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.core.Bot;
+import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
@@ -24,6 +25,15 @@ public class MessageUtil {
         bot.sendGroupMsg(event.getGroupId(), MsgUtils.builder().img(BASE64_PREFIX + FileUtils.toBase64(file)).build(), autoEscape);
     }
 
+    public static void sendMsg(Bot bot, AnyMessageEvent event, String msg) {
+        sendMsg(bot, event, msg, false);
+    }
+
+    private static void sendMsg(Bot bot, AnyMessageEvent event, String msg, boolean autoEscape) {
+        bot.sendMsg(event, msg, autoEscape);
+    }
+
+
     public static void sendGroupMsg(Bot bot, GroupMessageEvent event, String msg) {
         bot.sendGroupMsg(event.getGroupId(), msg, false);
     }
@@ -33,7 +43,11 @@ public class MessageUtil {
     }
 
     public static void sendPrivateMsg(Bot bot, PrivateMessageEvent event, String msg) {
-        bot.sendPrivateMsg(event.getUserId(), msg, false);
+        sendPrivateMsg(bot, event.getUserId(), msg);
+    }
+
+    public static void sendPrivateMsg(Bot bot, Long userId, String msg) {
+        bot.sendPrivateMsg(userId, msg, false);
     }
 
 
@@ -42,10 +56,24 @@ public class MessageUtil {
     }
 
     public static void sendMsg(Bot bot, MessageEvent event, String msg) {
-        if (GroupMessageEvent.class.isInstance(event)) {
+        if (event instanceof GroupMessageEvent) {
             sendGroupMsg(bot, (GroupMessageEvent) event, msg);
-        } else if (PrivateMessageEvent.class.isInstance(event)) {
+        } else if (event instanceof PrivateMessageEvent) {
             sendPrivateMsg(bot, (PrivateMessageEvent) event, msg);
+        } else if (event instanceof AnyMessageEvent) {
+            sendAnyMsg(bot, (AnyMessageEvent) event, msg);
+        }
+    }
+
+    public static void sendAnyMsg(Bot bot, AnyMessageEvent event, String msg) {
+        sendAnyMsg(bot, event, msg, false);
+    }
+
+    public static void sendAnyMsg(Bot bot, AnyMessageEvent event, String msg, boolean flag) {
+        if (event.getGroupId() == null) {
+            bot.sendPrivateMsg(event.getUserId(), msg, flag);
+        } else {
+            bot.sendGroupMsg(event.getGroupId(), msg, flag);
         }
     }
 }

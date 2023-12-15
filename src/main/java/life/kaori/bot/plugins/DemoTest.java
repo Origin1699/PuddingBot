@@ -11,7 +11,6 @@ import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.enums.AtEnum;
 import life.kaori.bot.config.BotConfig;
-import life.kaori.bot.core.PluginManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,7 @@ import java.util.regex.Matcher;
  */
 @Shiro
 @Component
-public class DemoTest implements PluginManage {
+public class DemoTest{
     @Autowired
     private BotConfig config;
 
@@ -77,7 +76,7 @@ public class DemoTest implements PluginManage {
 //            System.out.println(e.getMessage());
 //        }
 
-        Map<String, PluginManage> beansOfType = SpringUtil.getBeansOfType(PluginManage.class);
+        Map<String, Plugin> beansOfType = SpringUtil.getBeansOfType(Plugin.class);
         beansOfType.forEach((k, v) -> {
             System.out.println(k + " : " + v);
         });

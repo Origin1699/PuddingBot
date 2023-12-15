@@ -16,7 +16,7 @@ import life.kaori.bot.common.constant.Constant;
 public class AuthUtil {
     private BotConfig config;
 
-    public boolean groupAuth(GroupMessageEvent event) {
+    public boolean groupMasterAuth(GroupMessageEvent event) {
         String role = event.getSender().getRole();
         return (Constant.ROLE_ADMIN.equals(role) || Constant.ROLE_OWNER.equals(role));
     }

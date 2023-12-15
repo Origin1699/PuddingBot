@@ -15,7 +15,7 @@ import life.kaori.bot.common.util.RegexUtils;
 import life.kaori.bot.common.constant.Api;
 import life.kaori.bot.core.ExecutorUtil;
 import life.kaori.bot.entity.dto.BiliMiniAppDTO;
-import life.kaori.bot.core.PluginManage;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,11 +30,13 @@ import java.util.regex.Matcher;
 @Component
 @Shiro
 @Slf4j
-public class MiniApp implements PluginManage {
+public class MiniApp implements Plugin {
     private RestTemplate restTemplate;
-
+    @Getter
     private final String name = this.getClass().getSimpleName();
-    private final String nickName = "小程序解析";
+    @Getter
+    private final List<String> nickName = List.of("小程序解析");
+    @Getter
     private final String help = """
             自动解析BiliBili小程序
             命令: https://b23.tv/xxxxxx

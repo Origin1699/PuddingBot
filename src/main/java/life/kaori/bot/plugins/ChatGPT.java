@@ -21,12 +21,12 @@ import life.kaori.bot.common.util.FileUtils;
 import life.kaori.bot.common.util.MessageUtil;
 import life.kaori.bot.config.BotConfig;
 import life.kaori.bot.core.ExecutorUtil;
-import life.kaori.bot.core.PluginManage;
 import life.kaori.bot.entity.chatgpt.ChatGPTEntity;
 import life.kaori.bot.entity.chatgpt.ChatGPTPrompt;
 import life.kaori.bot.entity.chatgpt.ChatGPTPlayer;
 import life.kaori.bot.repository.ChatGPTPlayerRepository;
 import life.kaori.bot.repository.ChatGPTRepository;
+import lombok.Getter;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ import java.util.regex.Matcher;
  */
 @Component
 @Shiro
-public class ChatGPT implements PluginManage {
+public class ChatGPT implements Plugin {
 
     @Autowired
     private AuthUtil authUtil;
@@ -53,12 +53,21 @@ public class ChatGPT implements PluginManage {
     private OpenAiService service;
     @Autowired
     private BotConfig botConfig;
-
     private Vector lock = new Vector<>();
+
+    @Getter
+    private final String name = this.getClass().getSimpleName();
+    @Getter
+    private final List<String> nickName = List.of("ChatGPT");
+    @Getter
+    private final String help = """
+                        chat [set|del|show|reload|add] prompt ; prompt修改操作
+                        chat prompt ; chat对话
+            """;
 
 
     @GroupMessageHandler
-    @MessageHandlerFilter(cmd = "^(?i)chat\\s(?<action>set|del|show|reload|add)?\\s?(?<prompt>[\\s\\S]+?)?$")
+    @MessageHandlerFilter(cmd = "^(?i)chat\\s+(?<action>set|del|show|reload|add)?\\s?(?<prompt>[\\s\\S]+?)?$")
     public void chat(Bot bot, GroupMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, ChatGPT.class.getSimpleName(), () -> {
             String prompt = matcher.group("prompt");
@@ -83,9 +92,7 @@ public class ChatGPT implements PluginManage {
     private void show(Bot bot, GroupMessageEvent event) {
         List<ChatGPTPlayer> list = playerRepository.findAll();
         MsgUtils text = MsgUtils.builder().text("当前所有prompt:");
-        if (list != null) {
-            list.forEach(player -> text.text("\n" + player.getName()));
-        }
+        list.forEach(player -> text.text("\n" + player.getName()));
         MessageUtil.sendGroupMsg(bot, event, text.build());
     }
 
