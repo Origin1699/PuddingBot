@@ -36,7 +36,7 @@ public class BotStrings {
     public static final BotStrings RESOURCE_FILE_NOT_EXISTS = new BotStrings("资源 {} 文件不存在");
     public static final BotStrings RESOURCE_FILE_PARSE_ERROR = new BotStrings("资源文件错误或格式不对");
     public static final BotStrings PLUGIN_FIND_ERROR = new BotStrings("未找到插件 {0}");
-
+    public static final BotStrings PLUGIN_CD_ERROR = new BotStrings("{0} 插件命令剩余冷却 {1} s");
 
     public BotException exception(Object... args) {
         return BotException.create(this, args);

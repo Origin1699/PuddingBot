@@ -1,6 +1,7 @@
 package life.kaori.bot.common.util;
 
 import com.mikuac.shiro.common.utils.MsgUtils;
+import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
@@ -9,6 +10,8 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 /**
  * author: origin
@@ -40,6 +43,15 @@ public class MessageUtil {
 
     public static void sendGroupMsg(Bot bot, GroupMessageEvent event, String msg, boolean autoEscape) {
         bot.sendGroupMsg(event.getGroupId(), msg, autoEscape);
+    }
+
+    public static void sendGroupMsg(Bot bot, GroupMessageEvent event, List<String> messages) {
+        sendGroupMsg(bot, event, messages, false);
+    }
+
+    public static void sendGroupMsg(Bot bot, GroupMessageEvent event, List<String> messages, boolean autoEscape) {
+        List<Map<String, Object>> forwardMsg = ShiroUtils.generateForwardMsg(bot.getSelfId(), "布丁", messages);
+        bot.sendGroupForwardMsg(event.getGroupId(), forwardMsg);
     }
 
     public static void sendPrivateMsg(Bot bot, PrivateMessageEvent event, String msg) {
@@ -74,6 +86,20 @@ public class MessageUtil {
             bot.sendPrivateMsg(event.getUserId(), msg, flag);
         } else {
             bot.sendGroupMsg(event.getGroupId(), msg, flag);
+        }
+    }
+
+    public static void sendAnyMsg(Bot bot, AnyMessageEvent event, List messages) {
+        sendAnyMsg(bot, event, messages, false);
+    }
+
+    public static void sendAnyMsg(Bot bot, AnyMessageEvent event, List messages, boolean flag) {
+        if (event.getGroupId() == null) {
+            List<Map<String, Object>> forwardMsg = ShiroUtils.generateForwardMsg(bot.getSelfId(), "布丁", messages);
+            bot.sendPrivateForwardMsg(event.getUserId(), forwardMsg);
+        } else {
+            List<Map<String, Object>> forwardMsg = ShiroUtils.generateForwardMsg(bot.getSelfId(), "布丁", messages);
+            bot.sendGroupForwardMsg(event.getGroupId(), forwardMsg);
         }
     }
 }

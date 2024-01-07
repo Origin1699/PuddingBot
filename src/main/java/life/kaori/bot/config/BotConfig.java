@@ -19,6 +19,8 @@ public class BotConfig {
     private String prefix;
     private BotProxy proxy;
     private ChatGPT chatGPT;
+    private Tarot tarot;
+    private Aria2 aria2;
 
     @Data
     public static class BotProxy {
@@ -34,4 +36,16 @@ public class BotConfig {
         private String module;
 
     }
+
+    @Data
+    public static class Tarot {
+        private Long cd;
+
+    }
+
+    @Data
+    public static class Aria2 {
+        private String token;
+    }
+
 }

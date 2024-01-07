@@ -22,3 +22,9 @@ bot-config:
   prefix:
   master:
     - '10001'
+  tarot:
+    #单位 秒
+    cd: 60
+  aria2:
+    url:
+    token:

@@ -13,4 +13,7 @@ public interface Plugin {
     List<String> getNickName();
 
     String getHelp();
+
+    default void cleanExpiringMap() {
+    }
 }

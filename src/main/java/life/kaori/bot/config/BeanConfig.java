@@ -7,11 +7,14 @@ import lombok.AllArgsConstructor;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import retrofit2.Retrofit;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 /**
@@ -33,4 +36,18 @@ public class BeanConfig {
         OpenAiApi openAiApi = retrofit.create(OpenAiApi.class);
         return new OpenAiService(openAiApi);
     }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().set(1,new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        return restTemplate;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    ;
 }

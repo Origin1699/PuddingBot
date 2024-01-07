@@ -11,4 +11,9 @@ bot-config:
     token: "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     timeout: 30
     module: "gpt-3.5-turbo"
-
+  tarot:
+    #单位 秒
+    cd: 60
+  aria2:
+    url:
+    token:
