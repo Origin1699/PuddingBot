@@ -89,11 +89,11 @@ public class MessageUtil {
         }
     }
 
-    public static void sendAnyMsg(Bot bot, AnyMessageEvent event, List messages) {
+    public static void sendAnyMsg(Bot bot, AnyMessageEvent event, List<String> messages) {
         sendAnyMsg(bot, event, messages, false);
     }
 
-    public static void sendAnyMsg(Bot bot, AnyMessageEvent event, List messages, boolean flag) {
+    public static void sendAnyMsg(Bot bot, AnyMessageEvent event, List<String> messages, boolean flag) {
         if (event.getGroupId() == null) {
             List<Map<String, Object>> forwardMsg = ShiroUtils.generateForwardMsg(bot.getSelfId(), "布丁", messages);
             bot.sendPrivateForwardMsg(event.getUserId(), forwardMsg);

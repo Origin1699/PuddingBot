@@ -3,6 +3,10 @@ package top.ikaori.bot.plugins.aria2;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import top.ikaori.bot.core.exception.BotException;
+import top.ikaori.bot.core.exception.ExceptionMsg;
 import top.ikaori.bot.entity.dto.Aria2DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author origin
@@ -48,12 +54,12 @@ public class Aria2Util {
     };
 
     public Aria2DTO getGlobalStat() {
-        Aria2Command aria2Command = new Aria2Command().setToken("9529c3ca674d8810a4bc").setMethod(Aria2CommandType.getGlobalStat.value).addParam(queryParameter);
+        Aria2Command aria2Command = new Aria2Command(token).setMethod(Aria2CommandType.getGlobalStat.value).addParam(queryParameter);
         return exec(aria2Command);
     }
 
     public Aria2DTO getTellWaiting() {
-        Aria2Command aria2Command = new Aria2Command().setToken("9529c3ca674d8810a4bc").setMethod(Aria2CommandType.getGlobalStat.value).addParam(queryParameter);
+        Aria2Command aria2Command = new Aria2Command(token).setMethod(Aria2CommandType.tellWaiting.value).addParam(-1).addParam(1000).addParam(queryParameter);
         return exec(aria2Command);
     }
 
@@ -62,46 +68,45 @@ public class Aria2Util {
         return exec(aria2Command);
     }
 
-    public Aria2DTO addUrl(String magnetUrl) {
+    public String addUrl(String magnetUrl) throws JsonProcessingException {
         Aria2Command aria2Command = new Aria2Command(token).setMethod(Aria2CommandType.addUri.value).addParam(List.of(magnetUrl));
-        return execAddUri(aria2Command);
+        return execNoDto(aria2Command);
     }
 
-    private Aria2DTO execAddUri(Aria2Command aria2Command) {
+    public String start(String gid) throws JsonProcessingException {
+        Aria2Command aria2Command = new Aria2Command(token).setMethod(Aria2CommandType.unpause.value).addParam(gid);
+        return execNoDto(aria2Command);
+    }
+
+    public String stop(String gid) throws JsonProcessingException {
+        Aria2Command aria2Command = new Aria2Command(token).setMethod(Aria2CommandType.forcePause.value).addParam(gid);
+        return execNoDto(aria2Command);
+    }
+
+
+    private String execNoDto(Aria2Command aria2Command) throws JsonProcessingException {
         try {
             ResponseEntity<String> rest = template.postForEntity(url, buildJson(aria2Command), String.class);
-            String body = rest.getBody();
-//            Map map = objectMapper.readValue(body, Map.class);
-            return new Aria2DTO();
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Aria2DTO command(Aria2CommandType type) {
-        switch (type) {
-            default -> {
-                return exec(buildTaskQueryCommand(type));
+            if (rest.getStatusCode() == HttpStatus.OK) {
+                String body = rest.getBody();
+                Map map = objectMapper.readValue(body, Map.class);
+                return (String) map.get("result");
             }
-
+            throw ExceptionMsg.ARIA2_ERROR;
+        } catch (HttpClientErrorException httpError) {
+            String body = httpError.getResponseBodyAsString(StandardCharsets.UTF_8);
+            Map map = objectMapper.readValue(body, Map.class);
+            Map error = (Map) map.get("error");
+            throw new BotException((String) error.get("message"));
         }
-
     }
-
-    private Aria2Command buildTaskQueryCommand(Aria2CommandType type) {
-        return new Aria2Command(token).setMethod(type.value).addParam(-1).addParam(1000).addParam(queryParameter);
-    }
-
 
     public Aria2DTO exec(Aria2Command aria2Command) {
 
         try {
             ResponseEntity<String> rest = template.postForEntity(url, buildJson(aria2Command), String.class);
             String body = rest.getBody();
-
             return objectMapper.readValue(body, Aria2DTO.class);
-
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -111,8 +116,6 @@ public class Aria2Util {
     public String buildJson(Aria2Command aria2Command) throws JsonProcessingException {
         return objectMapper.writeValueAsString(aria2Command);
     }
-
-
 
     @Autowired
     public void setTemplate(RestTemplate restTemplate) {
