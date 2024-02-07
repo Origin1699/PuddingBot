@@ -9,6 +9,7 @@ import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import top.ikaori.bot.common.constant.BotStrings;
+import top.ikaori.bot.common.constant.Constant;
 import top.ikaori.bot.common.util.AuthUtil;
 import top.ikaori.bot.common.util.MessageUtil;
 import top.ikaori.bot.core.exception.BotException;
@@ -83,8 +84,8 @@ public class PluginManager {
         }
 
         MsgUtils text = MsgUtils.builder().text("插件列表如下: ");
-        getPlugins().forEach(plugin -> text.text("\r\n").text(plugin.getNickName().get(0)));
-        text.text("\r\n").text("发送 帮助 插件名称 可查看帮助信息");
+        getPlugins().forEach(plugin -> text.text(Constant.RN).text(plugin.getNickName().get(0)));
+        text.text(Constant.RN).text("发送 帮助 插件名称 可查看帮助信息");
         MessageUtil.sendMsg(bot, event, text.build());
     }
 

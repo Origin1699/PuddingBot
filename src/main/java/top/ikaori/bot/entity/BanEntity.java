@@ -23,7 +23,7 @@ import java.time.ZonedDateTime;
 public class BanEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column
     private Long userId;
@@ -34,6 +34,6 @@ public class BanEntity implements Serializable {
     private ZonedDateTime date;
 
     @Column
-    private String desc;
+    private String detail;
 
 }

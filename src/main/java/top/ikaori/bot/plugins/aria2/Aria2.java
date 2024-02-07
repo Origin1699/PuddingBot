@@ -62,7 +62,7 @@ public class Aria2 implements Plugin {
     }
 
     @AnyMessageHandler
-    @MessageHandlerFilter(cmd = "^(?i)aria\\s+(?<action>show|add|delete|start|stop)?\\s?(?<prompt>[\\s\\S]+?)?$")
+    @MessageHandlerFilter(cmd = "^(?i)aria\\s+(?<action>show|add|del|start|stop)?\\s?(?<prompt>[\\s\\S]+?)?$")
     public void list(Bot bot, AnyMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, Plugin.class.getSimpleName(), () -> {
             String prompt = matcher.group("prompt");
@@ -75,7 +75,7 @@ public class Aria2 implements Plugin {
             switch (action) {
                 case "show" -> show(bot, event);
                 case "add" -> add(bot, event, prompt);
-                case "start", "stop", "delete" -> startOrStopOrDelete(bot, event, action, prompt);
+                case "start", "stop", "del" -> startOrStopOrDelete(bot, event, action, prompt);
             }
         });
 
@@ -91,19 +91,16 @@ public class Aria2 implements Plugin {
                     util.start(gid);
                 } else if (action.equals("stop")){
                     util.stop(gid);
-                } else {
-//                    util.delete(gid);
+                } else if (action.equals("del")){
+                    util.delete(gid);
                 }
             } else {
                 bot.sendMsg(event, "请输入正确的编号", false);
             }
         } catch (JsonProcessingException e) {
-            bot.sendMsg(event, "请输入正确的编号", false);
+            bot.sendMsg(event, "请输入正确的命令", false);
         }
 
-    }
-
-    private void delete(Bot bot, AnyMessageEvent event, String prompt) {
     }
 
     private void add(Bot bot, AnyMessageEvent event, String prompt) {

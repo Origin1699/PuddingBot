@@ -18,7 +18,8 @@ public enum Aria2CommandType {
     //取消暂停
     unpause("aria2.unpause"),
     //强制暂停
-    forcePause("aria2.forcePause");
+    forcePause("aria2.forcePause"),
+    forceRemove("aria2.forceRemove");
 
     final String value;
 }

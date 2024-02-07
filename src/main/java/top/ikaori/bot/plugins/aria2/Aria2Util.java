@@ -83,6 +83,11 @@ public class Aria2Util {
         return execNoDto(aria2Command);
     }
 
+    public String delete(String gid) throws JsonProcessingException  {
+        Aria2Command aria2Command = new Aria2Command(token).setMethod(Aria2CommandType.forceRemove.value).addParam(gid);
+        return execNoDto(aria2Command);
+    }
+
 
     private String execNoDto(Aria2Command aria2Command) throws JsonProcessingException {
         try {

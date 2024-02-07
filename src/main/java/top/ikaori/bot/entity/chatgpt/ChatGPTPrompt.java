@@ -22,7 +22,7 @@ public class ChatGPTPrompt implements Serializable {
     @Enumerated(EnumType.STRING)
     private ChatMessageRole role;
 
-    @Column
+    @Column(length = 1000)
     private String content;
 
     public ChatGPTPrompt() {

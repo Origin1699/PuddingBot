@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -41,6 +42,7 @@ import java.util.regex.Matcher;
  */
 @Component
 @Shiro
+@Transactional
 public class ChatGPT implements Plugin {
 
     @Autowired

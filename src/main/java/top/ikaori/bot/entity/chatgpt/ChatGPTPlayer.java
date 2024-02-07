@@ -15,7 +15,7 @@ import java.util.List;
 public class ChatGPTPlayer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column
     private String name;
