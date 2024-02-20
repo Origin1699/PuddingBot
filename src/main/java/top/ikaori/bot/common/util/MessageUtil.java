@@ -102,4 +102,12 @@ public class MessageUtil {
             bot.sendGroupForwardMsg(event.getGroupId(), forwardMsg);
         }
     }
+    public static void at(Bot bot, Long groupId, Long userId, String msg) {
+        if (groupId == null) {
+            bot.sendPrivateMsg(userId, msg, false);
+        } else {
+            bot.sendGroupMsg(groupId,
+                    MsgUtils.builder().at(userId).text(msg).build(), false);
+        }
+    }
 }

@@ -110,7 +110,7 @@ public class Epic implements Plugin {
                     } else {
                         developer = gameCorp;
                     }
-                    var endDate = game.getPromotions().getUpcomingPromotionalOffers().get(0).getPromotionalOffers().get(0).getEndDate();
+                    var endDate = formatDate(game.getPromotions().getPromotionalOffers().get(0).getPromotionalOffers().get(0).getEndDate());
 
                     var gamePage = "https://store.epicgames.com/fr/p/" + game.getCatalogNs().getMappings().get(0).getPageSlug();
 
@@ -121,7 +121,7 @@ public class Epic implements Plugin {
                     msgList.add(msg);
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         });
         return msgList;

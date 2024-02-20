@@ -26,3 +26,14 @@ bot-config:
   aria2:
     url:
     token:
+  pic-search:
+    proxy: false
+    #单位 秒
+    timeout: 60
+    token: xxxxxxxxxxxxx
+    #相似度低于多少自动调用Ascii2d搜图（自动转为 Float 类型）
+    similarity: 60
+    #始终使用 Ascii2d 搜图（该设置为 true 时 similarity 不生效）
+    alwaysUseAscii2d: false
+    #如果是番剧是否发送预览视频
+    animePreviewVideo: false

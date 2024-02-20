@@ -21,6 +21,7 @@ public class BotConfig {
     private ChatGPT chatGPT;
     private Tarot tarot;
     private Aria2 aria2;
+    private PicSearch picSearch;
 
     @Data
     public static class BotProxy {
@@ -46,6 +47,16 @@ public class BotConfig {
     @Data
     public static class Aria2 {
         private String token;
+    }
+
+    @Data
+    public static class PicSearch {
+        private Long timeout;
+        private boolean proxy;
+        private String token;
+        private double similarity;
+        private boolean alwaysUseAscii2d;
+        private boolean animePreviewVideo;
     }
 
 }
