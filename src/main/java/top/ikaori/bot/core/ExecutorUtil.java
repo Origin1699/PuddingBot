@@ -2,9 +2,9 @@ package top.ikaori.bot.core;
 
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
+import lombok.extern.slf4j.Slf4j;
 import top.ikaori.bot.common.util.MessageUtil;
 import top.ikaori.bot.core.exception.BotException;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author origin
@@ -22,9 +22,5 @@ public class ExecutorUtil {
             MessageUtil.sendMsg(bot, event, "插件 " + name + " 执行失败, 请联系管理员查看后台日志。");
             log.error(e.getMessage(), e);
         }
-    }
-
-    private static void sendMsg(Bot bot, MessageEvent event, String message) {
-
     }
 }

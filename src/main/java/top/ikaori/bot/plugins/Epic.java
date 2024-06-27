@@ -14,16 +14,24 @@ import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import lombok.Getter;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import top.ikaori.bot.core.ExecutorUtil;
 import top.ikaori.bot.core.exception.ExceptionMsg;
 import top.ikaori.bot.entity.dto.EpicDTO;
 
-
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,12 +42,11 @@ import java.util.concurrent.TimeUnit;
 @Shiro
 public class Epic implements Plugin {
 
-    private String name = this.getClass().getSimpleName();
-    private List<String> nickName = List.of("epic周免");
-    private String help = """
+    private final List<String> nickName = List.of("epic周免");
+    private final String help = """
             发送 epic周免 查询免费游戏
             """;
-    private ExpiringMap expiringMap = ExpiringMap.builder().
+    private final ExpiringMap expiringMap = ExpiringMap.builder().
             variableExpiration().
             expirationPolicy(ExpirationPolicy.CREATED).
             expiration(1, TimeUnit.HOURS)
@@ -54,14 +61,12 @@ public class Epic implements Plugin {
         this.objectMapper = objectMapper;
     }
 
-
     private final String url = "https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale={locale}&country={country}&allowCountries={allowCountries}";
 
-
     @AnyMessageHandler
-    @MessageHandlerFilter(cmd = "^(epic)?周免")
+    @MessageHandlerFilter(cmd = "^(epic){0,1}(周免){0,1}$")
     public void free(Bot bot, AnyMessageEvent event) {
-        ExecutorUtil.exec(bot, event, name, () -> {
+        ExecutorUtil.exec(bot, event, getName(), () -> {
             List<Map<String, Object>> msg = ShiroUtils.generateForwardMsg(buildMsg(getFreeGame()));
             bot.sendForwardMsg(event, msg);
         });
@@ -69,7 +74,7 @@ public class Epic implements Plugin {
 
     private List<String> buildMsg(EpicDTO freeGame) {
         var list = freeGame.getData().getCatalog().getSearchStore().getElements();
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return List.of("未查询到免费游戏。");
         }
         ArrayList<String> msgList = new ArrayList<>();
@@ -78,51 +83,59 @@ public class Epic implements Plugin {
             var gameCorp = game.getSeller().getName();
             var gameThumbnail = "";
             if (!game.getKeyImages().isEmpty()) gameThumbnail = game.getKeyImages().get(0).getUrl();
-            var gamePrice = game.getPrice().getTotalPrice().getFmtPrice().getOriginalPrice();
-            try {
-                var promotions = game.getPromotions();
-                var gamePromotions = promotions.getPromotionalOffers();
-                var upcomingPromotions = promotions.getUpcomingPromotionalOffers();
-                if (gamePromotions.isEmpty() && !upcomingPromotions.isEmpty()) {
-                    // Promotion is not active yet, but will be active soon.
-                    var promotionData = upcomingPromotions.get(0).getPromotionalOffers().get(0);
-                    var startDate = formatDate(promotionData.getStartDate());
-                    var endDate = formatDate(promotionData.getEndDate());
-                    var msg = MsgUtils.builder().img(gameThumbnail)
-                            .text("\n" + gameName + " (" + gamePrice + ") 即将在 " + startDate + " 推出免费游玩，预计截止时间为 " + endDate + " ，该游戏由 " + gameCorp + " 发行。")
-                            .build();
-                    msgList.add(msg);
-                } else {
-                    var gameDesc = game.getDescription();
+            var gamePrice = Optional.ofNullable(game)
+                    .map(EpicDTO.Element::getPrice)
+                    .map(EpicDTO.Price::getTotalPrice)
+                    .map(EpicDTO.TotalPrice::getOriginalPrice)
+                    .orElse(0);
 
-                    var publisherName = game.getCustomAttributes().stream().filter(it -> it.getKey().equals("publisherName")).toList();
+            var gamePromotions = Optional.ofNullable(game)
+                    .map(EpicDTO.Element::getPromotions)
+                    .map(EpicDTO.Promotions::getPromotionalOffers)
+                    .orElse(new ArrayList<>());
 
-                    var publisher = "";
-                    if (!publisherName.isEmpty())
-                        publisher = publisherName.get(0).getValue();
-                    else {
-                        publisher = gameCorp;
-                    }
-                    var developerName = game.getCustomAttributes().stream().filter(it -> it.getKey().equals("developerName")).toList();
-                    var developer = "";
-                    if (!developerName.isEmpty()) {
-                        developer = developerName.get(0).getValue();
-                    } else {
-                        developer = gameCorp;
-                    }
-                    var endDate = formatDate(game.getPromotions().getPromotionalOffers().get(0).getPromotionalOffers().get(0).getEndDate());
+            var upcomingPromotions = Optional.ofNullable(game)
+                    .map(EpicDTO.Element::getPromotions)
+                    .map(EpicDTO.Promotions::getUpcomingPromotionalOffers)
+                    .orElse(new ArrayList<>());
+            if (gamePromotions.isEmpty() && !upcomingPromotions.isEmpty()) {
+                // Promotion is not active yet, but will be active soon.
+                var promotionData = upcomingPromotions.get(0).getPromotionalOffers().get(0);
+                var startDate = formatDate(promotionData.getStartDate());
+                var endDate = formatDate(promotionData.getEndDate());
+                var msg = MsgUtils.builder().img(gameThumbnail)
+                        .text("\n" + gameName + " (" + gamePrice + ") 即将在 " + startDate + " 推出免费游玩，预计截止时间为 " + endDate + " ，该游戏由 " + gameCorp + " 发行。")
+                        .build();
+                msgList.add(msg);
+            } else {
+                var gameDesc = game.getDescription();
 
-                    var gamePage = "https://store.epicgames.com/fr/p/" + game.getCatalogNs().getMappings().get(0).getPageSlug();
+                var publisherName = game.getCustomAttributes().stream().filter(it -> it.getKey().equals("publisherName")).toList();
 
-                    var msg = MsgUtils.builder().img(gameThumbnail)
-                            .text("\n" + gameName + " ( " + gamePrice + ") 当前免费，" + endDate + "截止。").text("\n\n " + gameDesc)
-                            .text("\n\n该游戏由 " + developer + " 制作，并由 " + publisher + " 发行。")
-                            .text("\n\n感兴趣的小伙伴可以点击下方链接免费领取啦～").text("\n" + gamePage).build();
-                    msgList.add(msg);
+                var publisher = "";
+                if (!publisherName.isEmpty())
+                    publisher = publisherName.get(0).getValue();
+                else {
+                    publisher = gameCorp;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                var developerName = game.getCustomAttributes().stream().filter(it -> it.getKey().equals("developerName")).toList();
+                var developer = "";
+                if (!developerName.isEmpty()) {
+                    developer = developerName.get(0).getValue();
+                } else {
+                    developer = gameCorp;
+                }
+                var endDate = formatDate(game.getPromotions().getPromotionalOffers().get(0).getPromotionalOffers().get(0).getEndDate());
+
+                var gamePage = "https://store.epicgames.com/fr/p/" + game.getCatalogNs().getMappings().get(0).getPageSlug();
+
+                var msg = MsgUtils.builder().img(gameThumbnail)
+                        .text("\n" + gameName + " ( " + gamePrice + ") 当前免费，" + endDate + "截止。").text("\n\n " + gameDesc)
+                        .text("\n\n该游戏由 " + developer + " 制作，并由 " + publisher + " 发行。")
+                        .text("\n\n感兴趣的小伙伴可以点击下方链接免费领取啦～").text("\n" + gamePage).build();
+                msgList.add(msg);
             }
+
         });
         return msgList;
     }

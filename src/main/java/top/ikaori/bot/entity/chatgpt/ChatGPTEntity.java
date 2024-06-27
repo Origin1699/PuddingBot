@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 @Table
-@Entity(name = "chatgpt_entity")
+@Entity(name = "chatgpt")
 public class ChatGPTEntity implements Serializable {
 
     @Id

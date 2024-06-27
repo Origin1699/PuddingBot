@@ -85,7 +85,7 @@ public class ImageUtils {
             double ratio = 0.0; // 缩放比例
             File f = new File(srcImageFile);
             BufferedImage bi = ImageIO.read(f);
-            Image itemp = bi.getScaledInstance(width, height, bi.SCALE_SMOOTH);
+            Image itemp = bi.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             // 计算比例
             if ((bi.getHeight() > height) || (bi.getWidth() > width)) {
                 if (bi.getHeight() > bi.getWidth()) {
@@ -395,7 +395,7 @@ public class ImageUtils {
             g.drawString(pressText, (width - (getLength(pressText) * fontSize))
                     / 2 + x, (height - fontSize) / 2 + y);
             g.dispose();
-            ImageIO.write((BufferedImage) image, "JPEG", destImageFile);// 输出到文件流
+            ImageIO.write(image, "JPEG", destImageFile);// 输出到文件流
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -436,7 +436,7 @@ public class ImageUtils {
             g.drawString(pressText, (width - (getLength(pressText) * fontSize))
                     / 2 + x, (height - fontSize) / 2 + y);
             g.dispose();
-            ImageIO.write((BufferedImage) image, "JPEG", new File(destImageFile));
+            ImageIO.write(image, "JPEG", new File(destImageFile));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -473,7 +473,7 @@ public class ImageUtils {
                     (height - height_biao) / 2, wideth_biao, height_biao, null);
             // 水印文件结束
             g.dispose();
-            ImageIO.write((BufferedImage) image, "JPEG", new File(destImageFile));
+            ImageIO.write(image, "JPEG", new File(destImageFile));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -539,7 +539,7 @@ public class ImageUtils {
     public final static int getLength(String text) {
         int length = 0;
         for (int i = 0; i < text.length(); i++) {
-            if (new String(text.charAt(i) + "").getBytes().length > 1) {
+            if ((text.charAt(i) + "").getBytes().length > 1) {
                 length += 2;
             } else {
                 length += 1;

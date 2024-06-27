@@ -19,7 +19,7 @@ import java.util.Set;
  */
 @Component
 public class ConfigurationPropertiesBeans implements BeanPostProcessor, ApplicationContextAware {
-    private Map<String, ConfigurationPropertiesBean> beans = new HashMap<>();
+    private final Map<String, ConfigurationPropertiesBean> beans = new HashMap<>();
 
     private ApplicationContext applicationContext;
 
@@ -35,9 +35,7 @@ public class ConfigurationPropertiesBeans implements BeanPostProcessor, Applicat
             this.beanFactory = (ConfigurableListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
         }
         if (applicationContext.getParent() != null && applicationContext.getParent()
-                .getAutowireCapableBeanFactory() instanceof ConfigurableListableBeanFactory) {
-            ConfigurableListableBeanFactory listable = (ConfigurableListableBeanFactory) applicationContext
-                    .getParent().getAutowireCapableBeanFactory();
+                .getAutowireCapableBeanFactory() instanceof ConfigurableListableBeanFactory listable) {
             String[] names = listable
                     .getBeanNamesForType(ConfigurationPropertiesBeans.class);
             if (names.length == 1) {

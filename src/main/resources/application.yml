@@ -1,39 +1,53 @@
-server:
-  # SpringBoot 项目的运行端口即为客户端反向 Websocket 连接端口
-  port: 5555
-#spring:
-#  datasource:
-#    driver-class-name: org.sqlite.JDBC
-#    url: jdbc:sqlite:BotDB.sqlite3
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#    show-sql: false
-#    open-in-view: false
-#    properties:
-#      hibernate:
-#        dialect: org.sqlite.hibernate.dialect.SQLiteDialect
+shiro:
+  ws:
+    client:
+      enable: true
+      url: "ws://localhost:3001"
+spring:
+  profiles:
+    #使用 mysql 或 sqlite
+    active: sqlite
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: false
+        use_sql_comments: true
+        format_sql: false
+
 #bot 设置
 bot-config:
-  nick-name: "布丁"
-  bot-id: '10001'
-  prefix:
-  master:
-    - '10001'
-  tarot:
-    #单位 秒
-    cd: 60
-  aria2:
-    url:
-    token:
-  pic-search:
-    proxy: false
-    #单位 秒
-    timeout: 60
-    token: xxxxxxxxxxxxx
-    #相似度低于多少自动调用Ascii2d搜图（自动转为 Float 类型）
-    similarity: 60
-    #始终使用 Ascii2d 搜图（该设置为 true 时 similarity 不生效）
-    alwaysUseAscii2d: false
-    #如果是番剧是否发送预览视频
-    animePreviewVideo: false
+  base:
+    #昵称
+    nick-name: "布丁"
+    #命令前缀
+    prefix:
+    #主人QQ号
+    master:
+      - '12345678'
+    #代理
+    proxy:
+      host: "127.0.0.1"
+      port: 7890
+      type: "HTTP"
+  #插件设置
+  plugins:
+    chat-gpt-config:
+      token: ""
+      timeout: 30
+      module: "gpt-3.5-turbo"
+      proxy: true
+    aria2-config:
+      url: "http://localhost:6800/jsonrpc"
+      token: ""
+    picSearch-config:
+      timeout: 30
+      proxy: false
+      token:
+      alwaysUseAscii2d: true
+    tarot-config:
+      cd: 60
+    steam-config:
+      apikey: ""

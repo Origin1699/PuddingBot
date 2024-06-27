@@ -1,8 +1,9 @@
-package top.ikaori.bot.entity;
+package top.ikaori.bot.entity.steam;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,32 +11,36 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
-/**
- *
- * @author origin 2023/7/6 16:57
- */
-@Entity
-@Table(name = "plugin")
+
+@Table
+@Entity(name = "steam_game")
 @NoArgsConstructor
 @Getter
 @Setter
-public class PluginEntity implements Serializable {
+@Accessors(chain = true)
+public class SteamGameEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
+    @Column
+    private Integer appid;
 
     @Column
     private String name;
-    @Column
-    private String alias;
-    @Column
-    private boolean enable;
 
-    public PluginEntity(String name, String alias, boolean enable) {
-        this.name = name;
-        this.alias = alias;
-        this.enable = enable;
-    }
+    @Column
+    private String picUrl;
+
+    @Column
+    private String initialFormatted;
+
+    @Column
+    private String finalFormatted;
+
+    @Column
+    private Integer discountPercent;
+
 }

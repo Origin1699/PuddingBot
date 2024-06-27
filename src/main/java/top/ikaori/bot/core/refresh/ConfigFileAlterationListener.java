@@ -12,7 +12,7 @@ import java.io.File;
 @Component
 public class ConfigFileAlterationListener extends FileAlterationListenerAdaptor {
 
-    private EnvironmentRefresher environmentRefresher;
+    private final EnvironmentRefresher environmentRefresher;
 
     public ConfigFileAlterationListener(EnvironmentRefresher environmentRefresher) {
         this.environmentRefresher = environmentRefresher;

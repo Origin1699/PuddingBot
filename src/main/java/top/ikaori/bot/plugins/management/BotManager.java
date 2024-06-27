@@ -5,11 +5,11 @@ import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
+import org.springframework.stereotype.Component;
 import top.ikaori.bot.common.util.AssertUtil;
 import top.ikaori.bot.common.util.AuthUtil;
 import top.ikaori.bot.common.util.MessageUtil;
 import top.ikaori.bot.core.ExecutorUtil;
-import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
 
@@ -20,9 +20,9 @@ import java.util.regex.Matcher;
 @Component
 public class BotManager {
 
-    private String name = this.getClass().getSimpleName();
+    private final String name = this.getClass().getSimpleName();
 
-    private AuthUtil authUtil;
+    private final AuthUtil authUtil;
 
     public BotManager(AuthUtil authUtil) {
         this.authUtil = authUtil;

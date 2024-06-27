@@ -31,8 +31,7 @@ public class MsgManager {
             var chatMode = chatModeUtil.isChatMode(event.getUserId(), event.getGroupId());
             if (chatMode != null) {
                 Plugin plugin = PluginManager.getPlugin(chatMode.getMode());
-                if (plugin instanceof PicSearch) {
-                    var picSearch = (PicSearch) plugin;
+                if (plugin instanceof PicSearch picSearch) {
                     picSearch.chat(bot, event, list);
                 }
             }

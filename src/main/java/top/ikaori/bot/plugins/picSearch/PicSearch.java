@@ -51,7 +51,7 @@ public class PicSearch implements Plugin {
     @AnyMessageHandler
     @MessageHandlerFilter(cmd = "^(搜图|识图)$")
     public void search(Bot bot, AnyMessageEvent event) {
-        chatModeUtil.setChatMode(bot, event, botConfig.getPicSearch().getTimeout(), name, "您已经很久没有发送图片啦，帮您退出检索模式了哟～");
+        chatModeUtil.setChatMode(bot, event, botConfig.getPlugins().getPicSearchConfig().getTimeout(), name, "您已经很久没有发送图片啦，帮您退出检索模式了哟～");
         bot.sendMsg(event, "您已经进入搜图模式，请直接发送图片。", false);
     }
 
@@ -69,11 +69,16 @@ public class PicSearch implements Plugin {
         String md5 = split[split.length - 1];
         var search = sauceNao.search(url);
         double similarity = Double.parseDouble(search.getFirst());
-        if (similarity > botConfig.getPicSearch().getSimilarity() && !botConfig.getPicSearch().isAlwaysUseAscii2d()) {
+        if (similarity > botConfig.getPlugins().getPicSearchConfig().getSimilarity() && !botConfig.getPlugins().getPicSearchConfig().isAlwaysUseAscii2d()) {
             return List.of(buildDefMsg(url), search.getSecond());
         }
-        Pair<String, String> search2 = ascii2d.search(url);
-        return List.of(buildDefMsg(url), search.getSecond(), search2.getFirst(), search2.getSecond());
+        try {
+            Pair<String, String> search2 = ascii2d.search(url);
+            return List.of(buildDefMsg(url), search.getSecond(), search2.getFirst(), search2.getSecond());
+        }catch (ArrayIndexOutOfBoundsException e){
+            return List.of(buildDefMsg(url), search.getSecond(),
+                    MsgUtils.builder().text("Ascii2d未检索到相似内容···").build());
+        }
     }
 
     private String buildDefMsg(String url) {

@@ -20,23 +20,26 @@ import java.net.Proxy;
 @Component
 public class Ascii2d {
     private BotConfig botConfig;
+
+    private BotConfig.Base.Proxy proxy;
     private ObjectMapper objectMapper;
     private final String api = "https://ascii2d.net/search/url/%s";
 
 
     public Pair<String, String> search(String imgUrl) throws IOException {
+        boolean isProxy = botConfig.getPlugins().getPicSearchConfig().isProxy();
         String url = String.format(api, imgUrl);
-        Response resp = NetUtil.get(url);
+        Response resp = NetUtil.get(url, isProxy);
         String reqUrl = resp.request().url().toString();
-        var colorSearchResult = request(0, reqUrl, botConfig.getPicSearch().isProxy());
-        var bovwSearchResult = request(1, reqUrl.replace("/color/", "/bovw/"), botConfig.getPicSearch().isProxy());
+        var colorSearchResult = request(0, reqUrl, isProxy);
+        var bovwSearchResult = request(1, reqUrl.replace("/color/", "/bovw/"), isProxy);
         return Pair.of(colorSearchResult, bovwSearchResult);
     }
 
     public String request(int type, String url, boolean proxy) throws IOException {
         var connect = Jsoup.connect(url);
         if (proxy) {
-            var p = botConfig.getProxy();
+            var p = botConfig.getBase().getProxy();
             connect.proxy(
                     new Proxy(Proxy.Type.valueOf(p.getType()), new InetSocketAddress(p.getHost(), p.getPort()))
             );

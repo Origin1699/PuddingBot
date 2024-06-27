@@ -4,17 +4,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import top.ikaori.bot.entity.chatgpt.ChatGPTEntity;
+import top.ikaori.bot.entity.steam.SteamGameEntity;
 
+import java.util.Optional;
 
-/**
- * @author origin
- */
 @Repository
-public interface ChatGPTRepository extends JpaRepository<ChatGPTEntity, Long> {
+public interface SteamGameRepository extends JpaRepository<SteamGameEntity, Long> {
+    <S extends SteamGameEntity> Optional<S> findByAppid(int appid);
     @Modifying
     @Transactional
-    void deleteByUserid(Long userid);
-
-    ChatGPTEntity findByUserid(Long userid);
+    void deleteByAppid(int appid);
 }

@@ -5,14 +5,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.CommandLinePropertySource;
-import org.springframework.core.env.CompositePropertySource;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertySource;
-import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.env.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
@@ -37,7 +30,7 @@ public class EnvironmentRefresher {
             CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME,
             "defaultProperties"};
 
-    private Set<String> standardSources = new HashSet<>(
+    private final Set<String> standardSources = new HashSet<>(
             Arrays.asList(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME,
                     StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
                     StandardServletEnvironment.JNDI_PROPERTY_SOURCE_NAME,
@@ -45,8 +38,8 @@ public class EnvironmentRefresher {
                     StandardServletEnvironment.SERVLET_CONTEXT_PROPERTY_SOURCE_NAME,
                     "configurationProperties"));
 
-    private ConfigurableApplicationContext context;
-    private ConfigurableEnvironment environment;
+    private final ConfigurableApplicationContext context;
+    private final ConfigurableEnvironment environment;
 
     public EnvironmentRefresher(ConfigurableApplicationContext context) {
         this.context = context;
@@ -200,7 +193,6 @@ public class EnvironmentRefresher {
                     extract(source, result);
                 }
             } catch (Exception e) {
-                return;
             }
         } else if (parent instanceof EnumerablePropertySource) {
             for (String key : ((EnumerablePropertySource<?>) parent).getPropertyNames()) {

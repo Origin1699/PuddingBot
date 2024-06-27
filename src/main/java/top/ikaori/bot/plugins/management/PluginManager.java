@@ -8,6 +8,8 @@ import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import top.ikaori.bot.common.constant.BotStrings;
 import top.ikaori.bot.common.constant.Constant;
 import top.ikaori.bot.common.util.AuthUtil;
@@ -18,11 +20,12 @@ import top.ikaori.bot.entity.PluginEntity;
 import top.ikaori.bot.plugins.Plugin;
 import top.ikaori.bot.repository.GroupPluginRepository;
 import top.ikaori.bot.repository.PluginRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 /**
@@ -32,7 +35,7 @@ import java.util.regex.Matcher;
 @Shiro
 public class PluginManager {
 
-    private String name = this.getClass().getSimpleName();
+    private final String name = this.getClass().getSimpleName();
     private AuthUtil authUtil;
     private GroupPluginRepository groupPluginRepository;
     private PluginRepository pluginRepository;

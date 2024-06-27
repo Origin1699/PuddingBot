@@ -9,17 +9,17 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
-import top.ikaori.bot.common.constant.RegexConst;
-import top.ikaori.bot.common.util.AssertUtil;
-import top.ikaori.bot.common.util.RegexUtils;
-import top.ikaori.bot.common.constant.Api;
-import top.ikaori.bot.core.ExecutorUtil;
-import top.ikaori.bot.entity.dto.BiliMiniAppDTO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import top.ikaori.bot.common.constant.Api;
+import top.ikaori.bot.common.constant.RegexConst;
+import top.ikaori.bot.common.util.AssertUtil;
+import top.ikaori.bot.common.util.RegexUtils;
+import top.ikaori.bot.core.ExecutorUtil;
+import top.ikaori.bot.entity.dto.BiliMiniAppDTO;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -50,25 +50,23 @@ public class MiniApp implements Plugin {
             biliMiniAppParse(bot, event);
         }
     }
-
+    private final String prefix = "https://%s";
     @GroupMessageHandler
-    @MessageHandlerFilter(cmd = "^https?://b23.tv/([A-Za-z1-9]+)")
+    @MessageHandlerFilter(cmd = "(?s).*(b23.tv/\\w+).*")
     public void parseShortUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, name, () -> {
-            String shortURL = matcher.group();
-            shortURL = shortURL.replace("http:", "https:");
-            String bv = getBv(shortURL);
+            String group = matcher.group(1);
+            String bv = getBv(String.format(prefix, group));
             bot.sendGroupMsg(event.getGroupId(), buildBiliMsg(bv), false);
         });
     }
 
     @GroupMessageHandler
-    @MessageHandlerFilter(cmd = "https?://[w]{0,3}\\.?bilibili.com/video/([A-Za-z0-9]+)")
+    @MessageHandlerFilter(cmd = "(?s).*/(?<BVId>BV\\w+).*")
     public void parseUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
         ExecutorUtil.exec(bot, event, name, () -> {
-            String shortURL = matcher.group();
-            shortURL = shortURL.replace("http:", "https:");
-            String bv = getBv(shortURL);
+            String bv = matcher.group(1);
+            bot.sendGroupMsg(event.getGroupId(), buildBiliMsg(bv), false);
         });
     }
 

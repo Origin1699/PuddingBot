@@ -3,18 +3,22 @@ package top.ikaori.bot.common.util;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
-import top.ikaori.bot.config.BotConfig;
-import top.ikaori.bot.core.exception.ExceptionMsg;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ikaori.bot.common.constant.Constant;
+import top.ikaori.bot.config.BotConfig;
+import top.ikaori.bot.core.exception.ExceptionMsg;
 
 /**
  * @author origin
  */
 @Component
 public class AuthUtil {
-    private BotConfig config;
+
+    private final BotConfig.Base base;
+
+    public AuthUtil(BotConfig.Base base) {
+        this.base = base;
+    }
 
     public boolean groupMasterAuth(GroupMessageEvent event) {
         String role = event.getSender().getRole();
@@ -23,15 +27,14 @@ public class AuthUtil {
 
 
     public void masterCheck(MessageEvent messageEvent) {
-        if (!config.getMaster().contains(messageEvent.getUserId())) throw ExceptionMsg.AUTH_ERROR;
+        if (!base.getMaster().contains(messageEvent.getUserId())) throw ExceptionMsg.AUTH_ERROR;
+    }
+
+    public boolean masterAuth(MessageEvent messageEvent) {
+        return base.getMaster().contains(messageEvent.getUserId());
     }
 
     private static boolean isAdministrator(Bot bot) {
         return false;
-    }
-
-    @Autowired
-    public void setConfig(BotConfig config) {
-        this.config = config;
     }
 }

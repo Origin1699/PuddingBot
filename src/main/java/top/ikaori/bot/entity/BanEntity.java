@@ -1,7 +1,8 @@
 package top.ikaori.bot.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
@@ -17,9 +18,10 @@ import java.time.ZonedDateTime;
  *
  * @author origin
  */
-@Data
 @Entity
-@Table(name = "tb_ban")
+@Table(name = "ban")
+@Getter
+@Setter
 public class BanEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

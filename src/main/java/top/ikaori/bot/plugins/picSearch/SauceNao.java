@@ -28,8 +28,8 @@ public class SauceNao {
     private final String api = "https://saucenao.com/search.php?api_key=%s&output_type=2&numres=3&db=999&url=%s";
 
     public SauceDTO request(String imgUrl) throws IOException {
-        String url = String.format(api, botConfig.getPicSearch().getToken(), imgUrl);
-        Response resp = NetUtil.get(url);
+        String url = String.format(api, botConfig.getPlugins().getPicSearchConfig().getToken(), imgUrl);
+        Response resp = NetUtil.get(url, botConfig.getPlugins().getPicSearchConfig().isProxy());
         String bodyString = resp.body().string();
         SauceDTO body = objectMapper.readValue(bodyString, SauceDTO.class);
         var header = body.getHeader();
@@ -55,7 +55,6 @@ public class SauceNao {
         switch (header.getIndexId()) {
             case 5 -> {
                 msgUtils.text("\n标题：" + data.getTitle());
-                ;
                 msgUtils.text("\n画师：" + data.getMemberName());
                 msgUtils.text("\n作品主页：https://pixiv.net/i/" + data.getPixivId());
                 msgUtils.text("\n画师主页：https://pixiv.net/u/" + data.getMemberId());

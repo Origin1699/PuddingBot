@@ -6,17 +6,17 @@ import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
+import lombok.Getter;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import top.ikaori.bot.common.util.MessageUtil;
 import top.ikaori.bot.core.ExecutorUtil;
 import top.ikaori.bot.core.exception.ExceptionMsg;
 import top.ikaori.bot.entity.Aria2Entity;
 import top.ikaori.bot.entity.dto.Aria2DTO;
 import top.ikaori.bot.plugins.Plugin;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import top.ikaori.bot.repository.Aria2Repository;
 
 import java.text.DecimalFormat;
@@ -47,7 +47,7 @@ public class Aria2 implements Plugin {
 
     private Aria2Util util;
 
-    private DecimalFormat df = new DecimalFormat("0.00");
+    private final DecimalFormat df = new DecimalFormat("0.00");
 
     @Autowired
     public void setUtil(Aria2Util aria2Util) {
@@ -61,6 +61,7 @@ public class Aria2 implements Plugin {
         this.repository = repository;
     }
 
+    //    @MessageHandlerFilter(cmd = "^(?i)aria\\s+(?<action>show|add|del|start|stop){1}\\s{0,}(?<prompt>[\\S]+)$")
     @AnyMessageHandler
     @MessageHandlerFilter(cmd = "^(?i)aria\\s+(?<action>show|add|del|start|stop)?\\s?(?<prompt>[\\s\\S]+?)?$")
     public void list(Bot bot, AnyMessageEvent event, Matcher matcher) {
@@ -89,9 +90,9 @@ public class Aria2 implements Plugin {
                 String gid = op.get().getGid();
                 if (action.equals("start")) {
                     util.start(gid);
-                } else if (action.equals("stop")){
+                } else if (action.equals("stop")) {
                     util.stop(gid);
-                } else if (action.equals("del")){
+                } else if (action.equals("del")) {
                     util.delete(gid);
                 }
             } else {
@@ -179,26 +180,31 @@ public class Aria2 implements Plugin {
             joiner.add("已暂停");
         }
 
-        if (Strings.isNotBlank(totalLength) && Strings.isNotBlank(completedLength)) {
-            double totalLengthBytes = Double.parseDouble(totalLength);
-            double completedLengthBytes = (Double.parseDouble(completedLength) / totalLengthBytes) * 100;
-            String size = " - ";
-            double totalKb = totalLengthBytes / 1024;
-            if (totalKb > 1024) {
-                double totalMb = totalKb / 1024;
-                if (totalMb > 1024) {
-                    size = df.format(totalMb / 1024) + "GB";
+        try {
+            if (Strings.isNotBlank(totalLength) && Strings.isNotBlank(completedLength)) {
+                double totalLengthBytes = Double.parseDouble(totalLength);
+                double completedLengthBytes = (Double.parseDouble(completedLength) / totalLengthBytes) * 100;
+                String percentage = df.format(completedLengthBytes);
+                joiner.add("进度:").add(percentage);
+                String size = " - ";
+                double totalKb = totalLengthBytes / 1024;
+                if (totalKb > 1024) {
+                    double totalMb = totalKb / 1024;
+                    if (totalMb > 1024) {
+                        size = df.format(totalMb / 1024) + "GB";
+                    } else {
+                        size = df.format(totalMb + "MB");
+                    }
                 } else {
-                    size = df.format(totalMb + "MB");
+                    size = df.format(totalKb) + "KB";
                 }
-            } else {
-                size = df.format(totalKb) + "KB";
-            }
 
-            String percentage = df.format(completedLengthBytes);
-            joiner.add("大小:").add(size);
-            joiner.add("进度:").add(percentage);
+                joiner.add("大小:").add(size);
+            }
+        } catch (Exception e) {
+            joiner.add("大小:").add(" - ");
         }
+
         if (type.equals(Aria2CommandType.tellActive)) {
             String downloadSpeed = result.getDownloadSpeed();
             if (Strings.isNotBlank(downloadSpeed)) {
@@ -214,6 +220,5 @@ public class Aria2 implements Plugin {
         }
         return joiner.toString();
     }
-
 
 }

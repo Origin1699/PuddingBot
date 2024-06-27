@@ -5,9 +5,9 @@ import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
+import org.springframework.boot.system.ApplicationHome;
 import top.ikaori.bot.common.constant.BotStrings;
 import top.ikaori.bot.core.exception.BotException;
-import org.springframework.boot.system.ApplicationHome;
 
 import java.io.File;
 import java.time.LocalTime;
@@ -31,7 +31,7 @@ public class CommonUtil {
         File dir = home.getDir();
         jarDir = dir.toString();
         resourceDir = new File(jarDir, "resources");
-        RandomGeneratorFactory<RandomGenerator> l128X256MixRandom = RandomGeneratorFactory.of("L128X256MixRandom");
+        RandomGeneratorFactory<RandomGenerator> l128X256MixRandom = RandomGeneratorFactory.getDefault();
         // 使用时间戳作为随机数种子
         randomGenerator = l128X256MixRandom.create(System.currentTimeMillis());
     }

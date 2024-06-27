@@ -22,7 +22,7 @@ public class FileAlterationMonitorRunner implements CommandLineRunner {
     /* config file suffix */
     private static final String[] CONFIG_FILE_SUFFIX = new String[]{".yml", ".yaml", ".properties"};
 
-    private ConfigFileAlterationListener configFileAlterationListener;
+    private final ConfigFileAlterationListener configFileAlterationListener;
 
     public FileAlterationMonitorRunner(ConfigFileAlterationListener configFileAlterationListener) {
         this.configFileAlterationListener = configFileAlterationListener;

@@ -14,6 +14,11 @@ import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
+import lombok.Getter;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import top.ikaori.bot.common.CommonUtil;
 import top.ikaori.bot.common.constant.BotStrings;
 import top.ikaori.bot.common.util.AuthUtil;
@@ -22,19 +27,17 @@ import top.ikaori.bot.common.util.MessageUtil;
 import top.ikaori.bot.config.BotConfig;
 import top.ikaori.bot.core.ExecutorUtil;
 import top.ikaori.bot.entity.chatgpt.ChatGPTEntity;
-import top.ikaori.bot.entity.chatgpt.ChatGPTPrompt;
 import top.ikaori.bot.entity.chatgpt.ChatGPTPlayer;
+import top.ikaori.bot.entity.chatgpt.ChatGPTPrompt;
 import top.ikaori.bot.repository.ChatGPTPlayerRepository;
 import top.ikaori.bot.repository.ChatGPTRepository;
-import lombok.Getter;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import java.util.regex.Matcher;
 
 /**
@@ -55,10 +58,8 @@ public class ChatGPT implements Plugin {
     private OpenAiService service;
     @Autowired
     private BotConfig botConfig;
-    private Vector lock = new Vector<>();
+    private final Vector lock = new Vector<>();
 
-    @Getter
-    private final String name = this.getClass().getSimpleName();
     @Getter
     private final List<String> nickName = List.of("ChatGPT");
     @Getter
@@ -100,7 +101,7 @@ public class ChatGPT implements Plugin {
 
 
     public void chat(Bot bot, GroupMessageEvent event, String cmd) {
-        BotConfig.ChatGPT chatGPT = botConfig.getChatGPT();
+        var chatGPT = botConfig.getPlugins().getChatGPTConfig();
         Long userId = event.getUserId();
         if (lock.contains(userId)) {
             MessageUtil.sendGroupMsg(bot, event, "上次结果未响应");
@@ -154,12 +155,8 @@ public class ChatGPT implements Plugin {
             }
             playerRepository.deleteByType(0);
             list.forEach(map -> {
-                playerRepository.save(new ChatGPTPlayer(map.get("act"), Arrays.asList(new ChatGPTPrompt(ChatMessageRole.SYSTEM, map.get("prompt"))), 0));
+                playerRepository.save(new ChatGPTPlayer(map.get("act"), List.of(new ChatGPTPrompt(ChatMessageRole.SYSTEM, map.get("prompt"))), 0));
             });
         });
-    }
-
-    public void callback(Bot bot, GroupMessageEvent event) {
-
     }
 }

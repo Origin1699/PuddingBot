@@ -9,5 +9,5 @@ import lombok.AllArgsConstructor;
 public enum RoleEnum {
     Master,
     Admin,
-    User;
+    User
 }

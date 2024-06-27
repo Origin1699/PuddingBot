@@ -6,6 +6,6 @@ package top.ikaori.bot.common;
  */
 public enum OperateType {
 
-    OPEN, CLOSE;
+    OPEN, CLOSE
 
 }

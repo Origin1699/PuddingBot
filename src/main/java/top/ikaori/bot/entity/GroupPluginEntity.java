@@ -1,6 +1,7 @@
 package top.ikaori.bot.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,9 +15,10 @@ import java.io.Serializable;
  *
  * @author origin
  */
-@Data
 @Entity
-@Table(name = "tb_plugin_enable")
+@Table(name = "group_plugin")
+@Getter
+@Setter
 public class GroupPluginEntity implements Serializable {
 
     @Id

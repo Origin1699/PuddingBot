@@ -5,15 +5,15 @@ import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
-import top.ikaori.bot.common.constant.BotStrings;
-import top.ikaori.bot.config.BotConfig;
-import top.ikaori.bot.core.EnableCleanMap;
 import lombok.Getter;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
+import top.ikaori.bot.common.constant.BotStrings;
+import top.ikaori.bot.config.BotConfig;
+import top.ikaori.bot.core.EnableCleanMap;
 
 import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
@@ -36,7 +36,6 @@ public class Tarot implements Plugin {
             帮助
             """;
 
-
     private ExpiringMap expiringMap;
 
     private final BotConfig config;
@@ -46,7 +45,7 @@ public class Tarot implements Plugin {
         expiringMap = ExpiringMap.builder().
                 variableExpiration().
                 expirationPolicy(ExpirationPolicy.CREATED).
-                expiration(config.getTarot().getCd(), TimeUnit.SECONDS)
+                expiration(config.getPlugins().getTarotConfig().getCd(), TimeUnit.SECONDS)
                 .build();
         Yaml yaml = new Yaml();
 //        HashMap<String, Object>  load = yaml.load(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("tarot.yaml"), "UTF-8")));
