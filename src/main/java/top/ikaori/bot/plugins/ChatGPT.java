@@ -15,8 +15,8 @@ import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import top.ikaori.bot.common.CommonUtil;
@@ -46,18 +46,14 @@ import java.util.regex.Matcher;
 @Component
 @Shiro
 @Transactional
-public class ChatGPT implements Plugin {
+@RequiredArgsConstructor
+public class ChatGPT implements AbstractPlugin {
 
-    @Autowired
-    private AuthUtil authUtil;
-    @Autowired
-    private ChatGPTRepository repository;
-    @Autowired
-    private ChatGPTPlayerRepository playerRepository;
-    @Autowired
-    private OpenAiService service;
-    @Autowired
-    private BotConfig botConfig;
+    private final AuthUtil authUtil;
+    private final ChatGPTRepository repository;
+    private final ChatGPTPlayerRepository playerRepository;
+    private final OpenAiService service;
+    private final BotConfig botConfig;
     private final Vector lock = new Vector<>();
 
     @Getter

@@ -26,9 +26,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Shiro
 @EnableCleanMap
-public class Tarot implements Plugin {
-    @Getter
-    private final String name = this.getClass().getSimpleName();
+public class Tarot implements AbstractPlugin {
+
     @Getter
     private final List<String> nickName = List.of("塔罗牌", "占卜");
     @Getter

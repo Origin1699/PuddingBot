@@ -9,19 +9,18 @@ import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
-import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import top.ikaori.bot.common.util.AuthUtil;
 import top.ikaori.bot.common.util.NetUtil;
-import top.ikaori.bot.config.BotConfig;
+import top.ikaori.bot.config.Global;
 import top.ikaori.bot.core.ExecutorUtil;
 import top.ikaori.bot.core.exception.BotException;
 import top.ikaori.bot.core.exception.ExceptionMsg;
@@ -31,23 +30,18 @@ import top.ikaori.bot.entity.steam.SteamGameSubsEntity;
 import top.ikaori.bot.repository.SteamGameRepository;
 import top.ikaori.bot.repository.SteamGameSubsRepository;
 
-import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.regex.Matcher;
 
 @Component
 @Shiro
-@Getter
 @Slf4j
-public class SteamGame implements Plugin {
-
+@RequiredArgsConstructor
+public class SteamGame implements AbstractPlugin {
+    @Getter
     private final List<String> nickName = List.of("Steam促销", "Steam打折");
+    @Getter
     private final String help = """
             订阅Steam游戏打折
             命令:
@@ -57,12 +51,7 @@ public class SteamGame implements Plugin {
 
     private final AuthUtil authUtil;
 
-    @Resource
-    private BotContainer botContainer;
-
-    private BotConfig.Base base;
-
-    private Bot bot;
+    private final Global global;
 
     private final SteamGameRepository gameRepository;
 
@@ -270,7 +259,7 @@ public class SteamGame implements Plugin {
                         .text("\n原价 " + game.getInitialFormatted()).text(String.format("  【-%s】", game.getDiscountPercent()))
                         .text("\n现价 " + game.getFinalFormatted()).build();
             }).toList();
-            getBot().sendGroupForwardMsg(groupId, ShiroUtils.generateForwardMsg(messages));
+            global.bot().sendGroupForwardMsg(groupId, ShiroUtils.generateForwardMsg(messages));
         });
     }
 
@@ -290,28 +279,10 @@ public class SteamGame implements Plugin {
                 MsgUtils msgUtils = MsgUtils.builder();
                 v.forEach(msgUtils::at);
                 msgUtils.text("\n").text(String.format("游戏 %s 打折啦!", game.getName()));
-                getBot().sendGroupMsg(groupId, msgUtils.build(), false);
+                global.bot().sendGroupMsg(groupId, msgUtils.build(), false);
             });
             subsRepository.saveAll(subs);
         });
     }
 
-    private Bot getBot() {
-        if (bot == null) {
-            bot = botContainer.robots.get(base.getBotId());
-        }
-        return bot;
-    }
-
-    @Autowired
-    public void setBase(BotConfig.Base base) {
-        this.base = base;
-    }
-
-    public SteamGame(SteamGameRepository steamGameRepository, ObjectMapper objectMapper, SteamGameSubsRepository subsRepository, AuthUtil authUtil) {
-        this.gameRepository = steamGameRepository;
-        this.objectMapper = objectMapper;
-        this.subsRepository = subsRepository;
-        this.authUtil = authUtil;
-    }
 }

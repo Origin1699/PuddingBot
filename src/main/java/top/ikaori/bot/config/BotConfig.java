@@ -46,6 +46,8 @@ public class BotConfig {
 
         private SteamConfig steamConfig;
 
+        private WordCloudConfig wordCloudConfig;
+
         @Data
         public static class ChatGPTConfig {
             private String token;
@@ -79,6 +81,14 @@ public class BotConfig {
         @Data
         public static class SteamConfig {
             private String apikey;
+        }
+
+        @Data
+        public static class WordCloudConfig {
+            private int cronTaskRate;
+            private int minFontSize;
+            private int maxFontSize;
+            private List<String> filterRule;
         }
     }
 }

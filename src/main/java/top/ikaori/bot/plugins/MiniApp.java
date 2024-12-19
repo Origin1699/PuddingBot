@@ -30,10 +30,9 @@ import java.util.regex.Matcher;
 @Component
 @Shiro
 @Slf4j
-public class MiniApp implements Plugin {
+public class MiniApp implements AbstractPlugin {
     private RestTemplate restTemplate;
-    @Getter
-    private final String name = this.getClass().getSimpleName();
+
     @Getter
     private final List<String> nickName = List.of("小程序解析");
     @Getter
@@ -54,7 +53,7 @@ public class MiniApp implements Plugin {
     @GroupMessageHandler
     @MessageHandlerFilter(cmd = "(?s).*(b23.tv/\\w+).*")
     public void parseShortUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
-        ExecutorUtil.exec(bot, event, name, () -> {
+        ExecutorUtil.exec(bot, event, getName(), () -> {
             String group = matcher.group(1);
             String bv = getBv(String.format(prefix, group));
             bot.sendGroupMsg(event.getGroupId(), buildBiliMsg(bv), false);
@@ -64,14 +63,14 @@ public class MiniApp implements Plugin {
     @GroupMessageHandler
     @MessageHandlerFilter(cmd = "(?s).*/(?<BVId>BV\\w+).*")
     public void parseUrl(Bot bot, GroupMessageEvent event, Matcher matcher) {
-        ExecutorUtil.exec(bot, event, name, () -> {
+        ExecutorUtil.exec(bot, event, getName(), () -> {
             String bv = matcher.group(1);
             bot.sendGroupMsg(event.getGroupId(), buildBiliMsg(bv), false);
         });
     }
 
     private void biliMiniAppParse(Bot bot, GroupMessageEvent event) {
-        ExecutorUtil.exec(bot, event, name, () -> {
+        ExecutorUtil.exec(bot, event, getName(), () -> {
             List<ArrayMsg> json = event.getArrayMsg().stream().filter(msg -> msg.getType() == MsgTypeEnum.json).toList();
             String data = json.get(0).getData().get("data");
             String shortURL = JsonParser.parseString(data).getAsJsonObject().getAsJsonObject("meta").getAsJsonObject("detail_1").get("qqdocurl").getAsString();

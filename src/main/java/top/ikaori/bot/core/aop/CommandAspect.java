@@ -4,20 +4,21 @@ import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
-import top.ikaori.bot.common.util.AuthUtil;
-import top.ikaori.bot.common.util.BanUtil;
-import top.ikaori.bot.common.util.MessageUtil;
-import top.ikaori.bot.core.exception.BotException;
-import top.ikaori.bot.plugins.management.PluginManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.ikaori.bot.common.util.AuthUtil;
+import top.ikaori.bot.common.util.BanUtil;
+import top.ikaori.bot.common.util.MessageUtil;
+import top.ikaori.bot.core.exception.BotException;
+import top.ikaori.bot.plugins.management.PluginManager;
 
-import static top.ikaori.bot.common.CommonUtil.*;
+import static top.ikaori.bot.common.CommonUtil.getBot;
+import static top.ikaori.bot.common.CommonUtil.getMessageEvent;
 
 /**
  * @author origin
@@ -25,28 +26,14 @@ import static top.ikaori.bot.common.CommonUtil.*;
 @Component
 @Aspect
 @Slf4j
+@RequiredArgsConstructor
 public class CommandAspect {
 
-    private BanUtil banUtil;
+    private final BanUtil banUtil;
 
-    @Autowired
-    public void setBanUtil(BanUtil banUtil) {
-        this.banUtil = banUtil;
-    }
+    private final AuthUtil authUtil;
 
-    private AuthUtil authUtil;
-
-    @Autowired
-    public void setAuthUtil(AuthUtil authUtil) {
-        this.authUtil = authUtil;
-    }
-
-    private PluginManager pluginManager;
-
-    @Autowired
-    public void setPluginManager(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-    }
+    private final PluginManager pluginManager;
 
     @Pointcut("@annotation(com.mikuac.shiro.annotation.GroupMessageHandler)")
     private void groupPoint() {

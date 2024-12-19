@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.client.OpenAiApi;
 import com.theokanning.openai.service.OpenAiService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ import java.time.Duration;
  */
 @Configuration
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BeanConfig {
 
     @Bean
@@ -87,4 +87,14 @@ public class BeanConfig {
     public BotConfig.Plugins.SteamConfig steamConfig(BotConfig botConfig) {
         return botConfig.getPlugins().getSteamConfig();
     }
+
+    @Bean
+    public BotConfig.Plugins.WordCloudConfig wordCloudConfig(BotConfig botConfig) {
+        return botConfig.getPlugins().getWordCloudConfig();
+    }
+
+    //@Bean
+    //public Bot bot(BotContainer botContainer, BotConfig botConfig) {
+    //    return botContainer.robots.get(botConfig.getBase().getBotId());
+    //}
 }

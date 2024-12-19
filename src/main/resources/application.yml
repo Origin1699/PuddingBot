@@ -51,3 +51,8 @@ bot-config:
       cd: 60
     steam-config:
       apikey: ""
+    word-cloud-config:
+      cron-task-rate: 5
+      max-font-size: 80
+      min-font-size: 20
+      filter-rule: [ "http","&#" ]

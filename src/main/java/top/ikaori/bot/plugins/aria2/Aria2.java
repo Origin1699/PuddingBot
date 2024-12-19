@@ -16,7 +16,7 @@ import top.ikaori.bot.core.ExecutorUtil;
 import top.ikaori.bot.core.exception.ExceptionMsg;
 import top.ikaori.bot.entity.Aria2Entity;
 import top.ikaori.bot.entity.dto.Aria2DTO;
-import top.ikaori.bot.plugins.Plugin;
+import top.ikaori.bot.plugins.AbstractPlugin;
 import top.ikaori.bot.repository.Aria2Repository;
 
 import java.text.DecimalFormat;
@@ -31,10 +31,8 @@ import java.util.regex.Matcher;
  */
 @Shiro
 @Component
-public class Aria2 implements Plugin {
+public class Aria2 implements AbstractPlugin {
 
-    @Getter
-    private final String name = this.getClass().getSimpleName();
     @Getter
     private final List<String> nickName = List.of("aria2");
     @Getter
@@ -65,7 +63,7 @@ public class Aria2 implements Plugin {
     @AnyMessageHandler
     @MessageHandlerFilter(cmd = "^(?i)aria\\s+(?<action>show|add|del|start|stop)?\\s?(?<prompt>[\\s\\S]+?)?$")
     public void list(Bot bot, AnyMessageEvent event, Matcher matcher) {
-        ExecutorUtil.exec(bot, event, Plugin.class.getSimpleName(), () -> {
+        ExecutorUtil.exec(bot, event, getName(), () -> {
             String prompt = matcher.group("prompt");
             String action = matcher.group("action");
             if (!StringUtils.hasText(action) || !StringUtils.hasText(prompt)) {

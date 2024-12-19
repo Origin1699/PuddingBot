@@ -9,6 +9,8 @@ import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import top.ikaori.bot.common.constant.BotStrings;
 import top.ikaori.bot.common.constant.Constant;
@@ -17,11 +19,10 @@ import top.ikaori.bot.common.util.MessageUtil;
 import top.ikaori.bot.core.exception.BotException;
 import top.ikaori.bot.entity.GroupPluginEntity;
 import top.ikaori.bot.entity.PluginEntity;
-import top.ikaori.bot.plugins.Plugin;
+import top.ikaori.bot.plugins.AbstractPlugin;
 import top.ikaori.bot.repository.GroupPluginRepository;
 import top.ikaori.bot.repository.PluginRepository;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -102,13 +103,29 @@ public class PluginManager {
     private final Map<String, Map<Long, Boolean>> groupPluginMap = new HashMap<>();
 
 
-    @PostConstruct
+    public static AbstractPlugin getPlugin(String name) {
+        Map<String, AbstractPlugin> plugins = SpringUtil.getBeansOfType(AbstractPlugin.class);
+        for (AbstractPlugin abstractPlugin : plugins.values()) {
+            String pluginName = abstractPlugin.getName();
+            if (pluginName.equalsIgnoreCase(name)) {
+                return abstractPlugin;
+            }
+            for (String nickName : abstractPlugin.getNickName()) {
+                if (nickName.equalsIgnoreCase(name)) {
+                    return abstractPlugin;
+                }
+            }
+        }
+        throw BotException.create(BotStrings.PLUGIN_FIND_ERROR, name);
+    }
+
+    @EventListener(ContextRefreshedEvent.class)
     public void init() {
         List<PluginEntity> plugins = pluginRepository.findAll();
         plugins.forEach(pluginEntity -> {
             try {
-                Plugin plugin = getPlugin(pluginEntity.getName());
-                pluginMap.put(plugin.getName(), pluginEntity.isEnable());
+                AbstractPlugin abstractPlugin = getPlugin(pluginEntity.getName());
+                pluginMap.put(abstractPlugin.getName(), pluginEntity.isEnable());
             } catch (Exception e) {
                 pluginRepository.delete(pluginEntity);
                 groupPluginRepository.deleteByPluginName(pluginEntity.getName());
@@ -132,22 +149,6 @@ public class PluginManager {
         });
     }
 
-    public static Plugin getPlugin(String name) {
-        Map<String, Plugin> plugins = SpringUtil.getBeansOfType(Plugin.class);
-        for (Plugin plugin : plugins.values()) {
-            String pluginName = plugin.getName();
-            if (pluginName.equalsIgnoreCase(name)) {
-                return plugin;
-            }
-            for (String nickName : plugin.getNickName()) {
-                if (nickName.equalsIgnoreCase(name)) {
-                    return plugin;
-                }
-            }
-        }
-        throw BotException.create(BotStrings.PLUGIN_FIND_ERROR, name);
-    }
-
     public static String getPluginName(String name) {
         return getPlugin(name).getName();
     }
@@ -160,8 +161,8 @@ public class PluginManager {
         return getPlugin(name).getNickName();
     }
 
-    public Collection<Plugin> getPlugins() {
-        return SpringUtil.getBeansOfType(Plugin.class).values();
+    public Collection<AbstractPlugin> getPlugins() {
+        return SpringUtil.getBeansOfType(AbstractPlugin.class).values();
     }
 
     public boolean groupReply(Long groupId, String pluginName) {
@@ -194,8 +195,8 @@ public class PluginManager {
         GroupPluginEntity entity = groupPluginRepository.findByGroupIdAndPluginName(groupId, pluginName);
         if (entity == null) {
             entity = new GroupPluginEntity();
-            Plugin plugin = getPlugin(pluginName);
-            entity.setPluginName(plugin.getName());
+            AbstractPlugin abstractPlugin = getPlugin(pluginName);
+            entity.setPluginName(abstractPlugin.getName());
             entity.setGroupId(groupId);
             entity.setEnable(flag);
         }
@@ -208,8 +209,8 @@ public class PluginManager {
         pluginMap.put(pluginName, flag);
         PluginEntity entity = pluginRepository.findByName(pluginName);
         if (entity == null) {
-            Plugin plugin = getPlugin(pluginName);
-            entity = new PluginEntity(plugin.getName(), plugin.getNickName().get(0), flag);
+            AbstractPlugin abstractPlugin = getPlugin(pluginName);
+            entity = new PluginEntity(abstractPlugin.getName(), abstractPlugin.getNickName().get(0), flag);
         }
         entity.setEnable(flag);
         pluginRepository.save(entity);

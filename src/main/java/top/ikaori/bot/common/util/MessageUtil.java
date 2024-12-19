@@ -110,4 +110,18 @@ public class MessageUtil {
                     MsgUtils.builder().at(userId).text(msg).build(), false);
         }
     }
+
+    public static void reply(MessageEvent event, Bot bot, String msg) {
+        if (event instanceof AnyMessageEvent) {
+            bot.sendMsg((AnyMessageEvent) event, buildReply(((AnyMessageEvent) event).getMessageId(), msg), false);
+        } else if (event instanceof GroupMessageEvent) {
+            bot.sendGroupMsg(((GroupMessageEvent) event).getGroupId(), buildReply(((GroupMessageEvent) event).getMessageId(), msg), false);
+        } else if (event instanceof PrivateMessageEvent) {
+            bot.sendPrivateMsg((event).getUserId(), buildReply(((PrivateMessageEvent) event).getMessageId(), msg), false);
+        }
+    }
+
+    private static String buildReply(Integer msgId, String msg) {
+        return MsgUtils.builder().reply(msgId).text(msg).build();
+    }
 }

@@ -9,12 +9,12 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.model.ArrayMsg;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import top.ikaori.bot.config.BotConfig;
-import top.ikaori.bot.plugins.Plugin;
+import top.ikaori.bot.plugins.AbstractPlugin;
 import top.ikaori.bot.plugins.management.ChatModeUtil;
 
 import java.io.IOException;
@@ -26,32 +26,29 @@ import java.util.Map;
  */
 @Shiro
 @Component
-public class PicSearch implements Plugin {
+@RequiredArgsConstructor
+public class PicSearch implements AbstractPlugin {
 
-    @Getter
-    private final String name = this.getClass().getSimpleName();
     @Getter
     private final List<String> nickName = List.of("搜图");
     @Getter
     private final String help = """
-              
-                    
             """;
-    private ChatModeUtil chatModeUtil;
+    private final ChatModeUtil chatModeUtil;
 
-    private BotConfig botConfig;
+    private final BotConfig botConfig;
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    private SauceNao sauceNao;
+    private final SauceNao sauceNao;
 
-    private Ascii2d ascii2d;
+    private final Ascii2d ascii2d;
 
 
     @AnyMessageHandler
     @MessageHandlerFilter(cmd = "^(搜图|识图)$")
     public void search(Bot bot, AnyMessageEvent event) {
-        chatModeUtil.setChatMode(bot, event, botConfig.getPlugins().getPicSearchConfig().getTimeout(), name, "您已经很久没有发送图片啦，帮您退出检索模式了哟～");
+        chatModeUtil.setChatMode(bot, event, botConfig.getPlugins().getPicSearchConfig().getTimeout(), getName(), "您已经很久没有发送图片啦，帮您退出检索模式了哟～");
         bot.sendMsg(event, "您已经进入搜图模式，请直接发送图片。", false);
     }
 
@@ -75,7 +72,7 @@ public class PicSearch implements Plugin {
         try {
             Pair<String, String> search2 = ascii2d.search(url);
             return List.of(buildDefMsg(url), search.getSecond(), search2.getFirst(), search2.getSecond());
-        }catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             return List.of(buildDefMsg(url), search.getSecond(),
                     MsgUtils.builder().text("Ascii2d未检索到相似内容···").build());
         }
@@ -83,30 +80,5 @@ public class PicSearch implements Plugin {
 
     private String buildDefMsg(String url) {
         return MsgUtils.builder().img(url).text("图片查询结果如下:").build();
-    }
-
-    @Autowired
-    public void setChatModeUtil(ChatModeUtil chatModeUtil) {
-        this.chatModeUtil = chatModeUtil;
-    }
-
-    @Autowired
-    public void setBotConfig(BotConfig botConfig) {
-        this.botConfig = botConfig;
-    }
-
-    @Autowired
-    public void setRestTemplate(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
-    @Autowired
-    public void setSauceNao(SauceNao sauceNao) {
-        this.sauceNao = sauceNao;
-    }
-
-    @Autowired
-    public void setAscii2d(Ascii2d ascii2d) {
-        this.ascii2d = ascii2d;
     }
 }

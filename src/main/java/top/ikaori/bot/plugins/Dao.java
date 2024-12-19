@@ -22,7 +22,7 @@ import java.util.UUID;
  */
 @Component
 @Shiro
-public class Dao implements Plugin {
+public class Dao implements AbstractPlugin {
 
     @Getter
     private final List<String> nickName = List.of("刀","几点了");

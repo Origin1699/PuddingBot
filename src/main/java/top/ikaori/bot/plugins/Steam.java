@@ -1,15 +1,13 @@
 package top.ikaori.bot.plugins;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.core.Bot;
-import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,25 +15,22 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import top.ikaori.bot.config.BotConfig;
+import top.ikaori.bot.config.Global;
 import top.ikaori.bot.core.ExecutorUtil;
 import top.ikaori.bot.entity.dto.SteamDTO;
 import top.ikaori.bot.entity.steam.SteamEntity;
 import top.ikaori.bot.repository.SteamRepository;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.regex.Matcher;
 
 @Shiro
 @Component
-public class Steam implements Plugin {
+@RequiredArgsConstructor
+public class Steam implements AbstractPlugin {
 
     @Getter
     private final List<String> nickName = List.of("Steam");
@@ -48,26 +43,20 @@ public class Steam implements Plugin {
             steam subs  //查看Steam订阅
             """;
 
-    private ObjectMapper objectMapper;
+    private final RestTemplate template;
 
-    @Resource
-    private BotContainer botContainer;
+    private final BotConfig.Plugins.SteamConfig config;
 
-    private Bot bot;
+    private final Global global;
 
-    private RestTemplate template;
-
-    private BotConfig.Plugins.SteamConfig config;
-
-    private BotConfig.Base base;
-
-    private SteamRepository repository;
+    private final SteamRepository repository;
 
     private Map<Long, Map<String, SteamEntity>> subMap = new HashMap<>();
     private final Map<String, String> playGame = new HashMap<>();
     private final Map<String, LocalDateTime> playTime = new HashMap<>();
 
-    private final String STEAM_URI = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s";
+    private final String STEAM_STATUS_URI = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s";
+    private final String STEAM_STORE_URI = "https://store.steampowered.com/api/appdetails?appids=%s&cc=cn";
 
 
     @GroupMessageHandler
@@ -128,13 +117,13 @@ public class Steam implements Plugin {
 
 
     private void getStatus(Long groupId, Map<String, SteamEntity> groupMap) {
-        Bot bot = getBot();
+        Bot bot = global.bot();
         StringJoiner joiner = new StringJoiner(",");
         groupMap.forEach((k, v) -> {
             joiner.add(k);
         });
 
-        ResponseEntity<SteamDTO> response = template.getForEntity(String.format(STEAM_URI, config.getApikey(), joiner), SteamDTO.class);
+        ResponseEntity<SteamDTO> response = template.getForEntity(String.format(STEAM_STATUS_URI, config.getApikey(), joiner), SteamDTO.class);
         if (response.getStatusCode() != HttpStatus.OK) {
             return;
         }
@@ -203,7 +192,7 @@ public class Steam implements Plugin {
     }
 
 
-    @Scheduled(cron = "0 0/1 * * * ?", zone = "Asia/Shanghai")
+    @Scheduled(cron = "0 0/3 * * * ?", zone = "Asia/Shanghai")
     public void handler() {
         subMap.forEach(this::getStatus);
         try {
@@ -219,7 +208,6 @@ public class Steam implements Plugin {
         //getBot();
     }
 
-
     private void update() {
         HashMap<Long, Map<String, SteamEntity>> map = new HashMap<>();
         repository.findAll().stream().forEach(steamEntity -> {
@@ -227,38 +215,6 @@ public class Steam implements Plugin {
             group.put(steamEntity.getSteamId(), steamEntity);
         });
         this.subMap = map;
-    }
-
-    @Autowired
-    public void setConfig(BotConfig.Plugins.SteamConfig config) {
-        this.config = config;
-    }
-
-    @Autowired
-    public void setRepository(SteamRepository repository) {
-        this.repository = repository;
-    }
-
-    @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    @Autowired
-    public void setTemplate(RestTemplate restTemplate) {
-        this.template = restTemplate;
-    }
-
-    @Autowired
-    public void setBase(BotConfig.Base base) {
-        this.base = base;
-    }
-
-    private Bot getBot() {
-        if (bot == null) {
-            bot = botContainer.robots.get(base.getBotId());
-        }
-        return bot;
     }
 
 }

@@ -19,7 +19,7 @@ public class ExecutorUtil {
             MessageUtil.sendMsg(bot, event, botException.getMessage());
         } catch (Exception e) {
 //            e.printStackTrace();
-            MessageUtil.sendMsg(bot, event, "插件 " + name + " 执行失败, 请联系管理员查看后台日志。");
+            MessageUtil.sendMsg(bot, event, String.format("插件 %s 执行失败, 请联系管理员查看后台日志。", name));
             log.error(e.getMessage(), e);
         }
     }

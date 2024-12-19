@@ -1,19 +1,45 @@
+shiro:
+  ws:
+    client:
+      enable: true
+      url: "ws://localhost:3001"
+
+#bot 设置
 bot-config:
-  nick-name: "布丁"
-  prefix:
-  master:
-    - '10001'
-  proxy:
-    host: "127.0.0.1"
-    port: 7890
-    type: "HTTP"
-  chat-gpt:
-    token: "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    timeout: 30
-    module: "gpt-3.5-turbo"
-  tarot:
-    #单位 秒
-    cd: 60
-  aria2:
-    url:
-    token:
+  base:
+    #昵称
+    nick-name: "布丁"
+    #命令前缀
+    prefix:
+    #主人QQ号
+    master:
+      - '12345678'
+    #代理
+    proxy:
+      host: "127.0.0.1"
+      port: 7890
+      type: "HTTP"
+  #插件设置
+  plugins:
+    chat-gpt-config:
+      token: ""
+      timeout: 30
+      module: "gpt-3.5-turbo"
+      proxy: true
+    aria2-config:
+      url: "http://localhost:6800/jsonrpc"
+      token: ""
+    picSearch-config:
+      timeout: 30
+      proxy: false
+      token:
+      alwaysUseAscii2d: true
+    tarot-config:
+      cd: 60
+    steam-config:
+      apikey: ""
+    word-cloud-config:
+      cron-task-rate: 5
+      max-font-size: 80
+      min-font-size: 20
+      filter-rule: ["http","&#"]

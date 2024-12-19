@@ -14,7 +14,7 @@ import top.ikaori.bot.core.ExecutorUtil;
 import java.util.regex.Matcher;
 
 /**
- * @@author origin
+ * @author origin
  */
 @Shiro
 @Component
