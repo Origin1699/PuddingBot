@@ -47,7 +47,7 @@ import java.util.regex.Matcher;
 @Shiro
 @Transactional
 @RequiredArgsConstructor
-public class ChatGPT implements AbstractPlugin {
+public class ChatGPT implements Plugin {
 
     private final AuthUtil authUtil;
     private final ChatGPTRepository repository;

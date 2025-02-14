@@ -14,7 +14,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import top.ikaori.bot.config.BotConfig;
-import top.ikaori.bot.plugins.AbstractPlugin;
+import top.ikaori.bot.plugins.Plugin;
 import top.ikaori.bot.plugins.management.ChatModeUtil;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.util.Map;
 @Shiro
 @Component
 @RequiredArgsConstructor
-public class PicSearch implements AbstractPlugin {
+public class PicSearch implements Plugin {
 
     @Getter
     private final List<String> nickName = List.of("搜图");

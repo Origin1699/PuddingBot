@@ -31,14 +31,19 @@ import top.ikaori.bot.repository.SteamGameRepository;
 import top.ikaori.bot.repository.SteamGameSubsRepository;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 
 @Component
 @Shiro
 @Slf4j
 @RequiredArgsConstructor
-public class SteamGame implements AbstractPlugin {
+public class SteamGame implements Plugin {
     @Getter
     private final List<String> nickName = List.of("Steam促销", "Steam打折");
     @Getter

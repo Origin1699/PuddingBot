@@ -14,7 +14,12 @@ import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import lombok.Getter;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import top.ikaori.bot.core.ExecutorUtil;
@@ -22,7 +27,12 @@ import top.ikaori.bot.core.exception.ExceptionMsg;
 import top.ikaori.bot.entity.dto.EpicDTO;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 @Getter
 @Component
 @Shiro
-public class Epic implements AbstractPlugin {
+public class Epic implements Plugin {
 
     private final List<String> nickName = List.of("epic周免");
     private final String help = """

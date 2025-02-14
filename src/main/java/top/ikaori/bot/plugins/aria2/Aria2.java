@@ -16,7 +16,7 @@ import top.ikaori.bot.core.ExecutorUtil;
 import top.ikaori.bot.core.exception.ExceptionMsg;
 import top.ikaori.bot.entity.Aria2Entity;
 import top.ikaori.bot.entity.dto.Aria2DTO;
-import top.ikaori.bot.plugins.AbstractPlugin;
+import top.ikaori.bot.plugins.Plugin;
 import top.ikaori.bot.repository.Aria2Repository;
 
 import java.text.DecimalFormat;
@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
  */
 @Shiro
 @Component
-public class Aria2 implements AbstractPlugin {
+public class Aria2 implements Plugin {
 
     @Getter
     private final List<String> nickName = List.of("aria2");

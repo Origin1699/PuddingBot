@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.ikaori.bot.common.constant.Constant;
 import top.ikaori.bot.entity.MessageRecordEntity;
-import top.ikaori.bot.plugins.AbstractPlugin;
+import top.ikaori.bot.plugins.Plugin;
 import top.ikaori.bot.plugins.picSearch.PicSearch;
 import top.ikaori.bot.repository.MessageRecordRepository;
 
@@ -48,8 +48,8 @@ public class MessageHandler {
         if (!list.isEmpty()) {
             var chatMode = chatModeUtil.isChatMode(event.getUserId(), event.getGroupId());
             if (chatMode != null) {
-                AbstractPlugin abstractPlugin = PluginManager.getPlugin(chatMode.getMode());
-                if (abstractPlugin instanceof PicSearch picSearch) {
+                Plugin plugin = PluginManager.getPlugin(chatMode.getMode());
+                if (plugin instanceof PicSearch picSearch) {
                     picSearch.chat(bot, event, list);
                 }
             }

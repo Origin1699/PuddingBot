@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author origin
  */
-public interface AbstractPlugin {
+public interface Plugin {
     default String getName() {
         return this.getClass().getSimpleName();
     }

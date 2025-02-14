@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import top.ikaori.bot.plugins.AbstractPlugin;
+import top.ikaori.bot.plugins.Plugin;
 
 import java.util.Map;
 
@@ -25,8 +25,8 @@ public class SchedulerTask {
     public void Task() {
         Map<String, Object> clearMap = applicationContext.getBeansWithAnnotation(EnableCleanMap.class);
         for (Object bean : clearMap.values()) {
-            if (bean instanceof AbstractPlugin abstractPlugin) {
-                abstractPlugin.cleanExpiringMap();
+            if (bean instanceof Plugin plugin) {
+                plugin.cleanExpiringMap();
             }
         }
     }

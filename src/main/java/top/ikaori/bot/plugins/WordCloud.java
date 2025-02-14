@@ -45,8 +45,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
-import java.util.*;
 import java.util.regex.Matcher;
 
 /**
@@ -57,7 +60,7 @@ import java.util.regex.Matcher;
 @RequiredArgsConstructor
 @Slf4j
 @Lazy
-public class WordCloud implements AbstractPlugin {
+public class WordCloud implements Plugin {
     private static final String ZONE = "Asia/Shanghai";
 
     private final MessageRecordRepository repository;

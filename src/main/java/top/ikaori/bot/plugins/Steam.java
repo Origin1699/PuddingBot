@@ -24,13 +24,17 @@ import top.ikaori.bot.repository.SteamRepository;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 
 @Shiro
 @Component
 @RequiredArgsConstructor
-public class Steam implements AbstractPlugin {
+public class Steam implements Plugin {
 
     @Getter
     private final List<String> nickName = List.of("Steam");

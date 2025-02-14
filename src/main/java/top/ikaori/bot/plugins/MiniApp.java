@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 @Component
 @Shiro
 @Slf4j
-public class MiniApp implements AbstractPlugin {
+public class MiniApp implements Plugin {
     private RestTemplate restTemplate;
 
     @Getter
